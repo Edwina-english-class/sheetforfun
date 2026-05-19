@@ -4,543 +4,113 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>勸導單開立與登錄｜竹光國中</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600&display=swap');
-
   :root {
-    --ink: #1a1a2e;
-    --ink-light: #2d2d4e;
-    --red: #c0392b;
-    --red-light: #e74c3c;
-    --gold: #b8860b;
-    --cream: #faf8f3;
-    --paper: #f5f0e8;
-    --border: #d4c5a9;
-    --border-dark: #a89070;
-    --success: #27ae60;
-    --shadow: rgba(26,26,46,0.12);
-    --grade7: #1a3a5c;
-    --grade8: #2d5a27;
-    --grade9: #5c2d1a;
+    --ink: #1a1a2e; --ink-light: #2d2d4e; --red: #c0392b; --red-light: #e74c3c;
+    --cream: #faf8f3; --paper: #f5f0e8; --border: #d4c5a9; --border-dark: #a89070;
+    --success: #27ae60; --error: #c0392b; --shadow: rgba(26,26,46,0.12);
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans TC', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; }
 
-  body {
-    font-family: 'Noto Sans TC', sans-serif;
-    background: var(--cream);
-    color: var(--ink);
-    min-height: 100vh;
-  }
-
-  /* LOGIN SCREEN */
-  #loginScreen {
-    position: fixed; inset: 0;
-    background: var(--ink);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 1000;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .login-box {
-    background: var(--paper);
-    border: 2px solid var(--border-dark);
-    padding: 48px 56px;
-    text-align: center;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    max-width: 400px;
-    width: 90%;
-  }
-
-  .login-seal {
-    font-family: 'Noto Serif TC', serif;
-    font-size: 13px;
-    color: var(--red);
-    letter-spacing: 3px;
-    margin-bottom: 8px;
-  }
-
-  .login-title {
-    font-family: 'Noto Serif TC', serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--ink);
-    margin-bottom: 4px;
-    letter-spacing: 2px;
-  }
-
-  .login-sub {
-    font-size: 12px;
-    color: #888;
-    margin-bottom: 32px;
-    letter-spacing: 1px;
-  }
-
-  .login-box input {
-    width: 100%;
-    padding: 14px;
-    font-size: 28px;
-    text-align: center;
-    letter-spacing: 16px;
-    border: 1.5px solid var(--border-dark);
-    background: var(--cream);
-    color: var(--ink);
-    font-family: 'Noto Sans TC', sans-serif;
-    margin-bottom: 16px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
+  #loginScreen { position: fixed; inset: 0; background: var(--ink); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+  .login-box { background: var(--paper); border: 2px solid var(--border-dark); padding: 48px 56px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.5); max-width: 400px; width: 90%; }
+  .login-seal { font-family: 'Noto Serif TC', serif; font-size: 13px; color: var(--red); letter-spacing: 3px; margin-bottom: 8px; }
+  .login-title { font-family: 'Noto Serif TC', serif; font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 4px; letter-spacing: 2px; }
+  .login-sub { font-size: 12px; color: #888; margin-bottom: 32px; letter-spacing: 1px; }
+  .login-box input { width: 100%; padding: 14px; font-size: 28px; text-align: center; letter-spacing: 16px; border: 1.5px solid var(--border-dark); background: var(--cream); color: var(--ink); font-family: 'Noto Sans TC', sans-serif; margin-bottom: 16px; outline: none; transition: border-color 0.2s; }
   .login-box input:focus { border-color: var(--red); }
-
-  .login-btn {
-    width: 100%;
-    padding: 14px;
-    background: var(--red);
-    color: white;
-    border: none;
-    font-size: 15px;
-    font-family: 'Noto Sans TC', sans-serif;
-    font-weight: 500;
-    cursor: pointer;
-    letter-spacing: 3px;
-    transition: background 0.2s;
-  }
-
+  .login-btn { width: 100%; padding: 14px; background: var(--red); color: white; border: none; font-size: 15px; font-family: 'Noto Sans TC', sans-serif; font-weight: 500; cursor: pointer; letter-spacing: 3px; transition: background 0.2s; }
   .login-btn:hover { background: var(--red-light); }
+  .login-error { color: var(--red); font-size: 13px; margin-top: 12px; display: none; }
 
-  .login-error {
-    color: var(--red);
-    font-size: 13px;
-    margin-top: 12px;
-    display: none;
-  }
-
-  /* MAIN APP */
   #app { display: none; }
-
-  header {
-    background: var(--ink);
-    color: white;
-    padding: 20px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 3px solid var(--red);
-  }
-
+  header { background: var(--ink); color: white; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid var(--red); }
   .header-left { display: flex; align-items: center; gap: 16px; }
-
-  .header-seal {
-    width: 48px; height: 48px;
-    border: 2px solid var(--red);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Noto Serif TC', serif;
-    font-size: 11px;
-    color: var(--red);
-    letter-spacing: 1px;
-    line-height: 1.4;
-    text-align: center;
-  }
-
-  .header-text h1 {
-    font-family: 'Noto Serif TC', serif;
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: 2px;
-  }
-
-  .header-text p {
-    font-size: 12px;
-    color: #aaa;
-    margin-top: 2px;
-    letter-spacing: 1px;
-  }
-
-  .header-right {
-    font-size: 13px;
-    color: #aaa;
-    text-align: right;
-  }
-
+  .header-seal { width: 48px; height: 48px; border: 2px solid var(--red); display: flex; align-items: center; justify-content: center; font-family: 'Noto Serif TC', serif; font-size: 11px; color: var(--red); letter-spacing: 1px; line-height: 1.4; text-align: center; }
+  .header-text h1 { font-family: 'Noto Serif TC', serif; font-size: 20px; font-weight: 700; letter-spacing: 2px; }
+  .header-text p { font-size: 12px; color: #aaa; margin-top: 2px; letter-spacing: 1px; }
+  .header-right { font-size: 13px; color: #aaa; text-align: right; }
   .header-date { font-weight: 500; color: #ddd; }
 
-  /* GRADE TABS */
-  .grade-tabs {
-    display: flex;
-    background: var(--ink-light);
-    padding: 0 32px;
-    gap: 4px;
-  }
-
-  .grade-tab {
-    padding: 12px 28px;
-    font-size: 14px;
-    font-family: 'Noto Serif TC', serif;
-    font-weight: 500;
-    letter-spacing: 2px;
-    cursor: pointer;
-    color: #aaa;
-    border-bottom: 3px solid transparent;
-    transition: all 0.2s;
-    background: none;
-    border-top: none;
-    border-left: none;
-    border-right: none;
-  }
-
+  .grade-tabs { display: flex; background: var(--ink-light); padding: 0 32px; gap: 4px; }
+  .grade-tab { padding: 12px 28px; font-size: 14px; font-family: 'Noto Serif TC', serif; font-weight: 500; letter-spacing: 2px; cursor: pointer; color: #aaa; border-bottom: 3px solid transparent; transition: all 0.2s; background: none; border-top: none; border-left: none; border-right: none; }
   .grade-tab:hover { color: #ddd; }
   .grade-tab.active[data-grade="7"] { color: #6ab0f5; border-bottom-color: #6ab0f5; }
   .grade-tab.active[data-grade="8"] { color: #7dd87d; border-bottom-color: #7dd87d; }
   .grade-tab.active[data-grade="9"] { color: #f5a87d; border-bottom-color: #f5a87d; }
 
-  /* MAIN CONTENT */
-  main {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 32px 24px;
-  }
-
+  main { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
   .grade-panel { display: none; }
   .grade-panel.active { display: block; }
-
-  /* GRADE HEADER */
-  .grade-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-  }
-
-  .grade-title {
-    font-family: 'Noto Serif TC', serif;
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .grade-badge {
-    display: inline-block;
-    width: 8px; height: 8px;
-    border-radius: 50%;
-  }
-
+  .grade-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .grade-title { font-family: 'Noto Serif TC', serif; font-size: 18px; font-weight: 700; letter-spacing: 2px; display: flex; align-items: center; gap: 12px; }
+  .grade-badge { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
   .grade-7 .grade-badge { background: #6ab0f5; }
   .grade-8 .grade-badge { background: #7dd87d; }
   .grade-9 .grade-badge { background: #f5a87d; }
 
-  /* FORM CARDS */
   .form-cards { display: flex; flex-direction: column; gap: 20px; }
-
-  .form-card {
-    background: white;
-    border: 1.5px solid var(--border);
-    box-shadow: 0 2px 12px var(--shadow);
-    overflow: hidden;
-  }
-
-  .card-header {
-    padding: 14px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1.5px solid var(--border);
-  }
-
-  .card-num {
-    font-family: 'Noto Serif TC', serif;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    color: #888;
-  }
-
+  .form-card { background: white; border: 1.5px solid var(--border); box-shadow: 0 2px 12px var(--shadow); overflow: hidden; }
+  .card-header { padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1.5px solid var(--border); }
+  .card-num { font-family: 'Noto Serif TC', serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; color: #888; }
   .card-body { padding: 20px; }
-
-  /* FORM GRID */
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 16px;
-  }
-
-  .form-row-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 16px;
-  }
-
+  .form-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
   .form-group { display: flex; flex-direction: column; gap: 6px; }
-
-  .form-label {
-    font-size: 12px;
-    font-weight: 500;
-    color: #555;
-    letter-spacing: 1px;
-  }
-
-  .required::after {
-    content: ' *';
-    color: var(--red);
-  }
-
-  select, input[type="text"] {
-    padding: 10px 12px;
-    border: 1.5px solid var(--border);
-    background: var(--cream);
-    font-size: 14px;
-    font-family: 'Noto Sans TC', sans-serif;
-    color: var(--ink);
-    outline: none;
-    transition: border-color 0.2s;
-    appearance: none;
-    -webkit-appearance: none;
-  }
-
-  select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23888' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    padding-right: 32px;
-    cursor: pointer;
-  }
-
+  .form-label { font-size: 12px; font-weight: 500; color: #555; letter-spacing: 1px; }
+  .required::after { content: ' *'; color: var(--red); }
+  select, input[type="text"] { padding: 10px 12px; border: 1.5px solid var(--border); background: var(--cream); font-size: 14px; font-family: 'Noto Sans TC', sans-serif; color: var(--ink); outline: none; transition: border-color 0.2s; appearance: none; -webkit-appearance: none; }
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23888' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer; }
   select:focus, input[type="text"]:focus { border-color: var(--red); }
-
-  .name-display {
-    padding: 10px 12px;
-    border: 1.5px solid var(--border);
-    background: #f0ede6;
-    font-size: 14px;
-    color: var(--ink);
-    font-weight: 500;
-    min-height: 42px;
-    display: flex;
-    align-items: center;
-  }
-
-  /* REASONS */
-  .reasons-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .reason-option {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    padding: 8px 12px;
-    border: 1.5px solid var(--border);
-    transition: all 0.15s;
-  }
-
+  .name-display { padding: 10px 12px; border: 1.5px solid var(--border); background: #f0ede6; font-size: 14px; color: var(--ink); font-weight: 500; min-height: 42px; display: flex; align-items: center; }
+  .reasons-group { display: flex; flex-direction: column; gap: 8px; }
+  .reason-option { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 8px 12px; border: 1.5px solid var(--border); transition: all 0.15s; }
   .reason-option:hover { border-color: var(--red); background: #fef9f9; }
   .reason-option.selected { border-color: var(--red); background: #fef9f9; }
-
-  .reason-option input[type="radio"] {
-    width: 16px; height: 16px;
-    accent-color: var(--red);
-    margin: 0;
-    padding: 0;
-    border: none;
-    background: none;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  .reason-option span {
-    font-size: 14px;
-    color: var(--ink);
-    letter-spacing: 0.5px;
-  }
-
-  textarea {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1.5px solid var(--border);
-    background: var(--cream);
-    font-size: 14px;
-    font-family: 'Noto Sans TC', sans-serif;
-    color: var(--ink);
-    outline: none;
-    resize: vertical;
-    min-height: 80px;
-    transition: border-color 0.2s;
-  }
-
+  .reason-option input[type="radio"] { width: 16px; height: 16px; accent-color: var(--red); margin: 0; padding: 0; border: none; background: none; cursor: pointer; flex-shrink: 0; }
+  .reason-option span { font-size: 14px; color: var(--ink); letter-spacing: 0.5px; }
+  textarea { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); background: var(--cream); font-size: 14px; font-family: 'Noto Sans TC', sans-serif; color: var(--ink); outline: none; resize: vertical; min-height: 80px; transition: border-color 0.2s; }
   textarea:focus { border-color: var(--red); }
-
-  /* CARD ACTIONS */
-  .card-footer {
-    padding: 14px 20px;
-    border-top: 1.5px solid var(--border);
-    background: #faf8f5;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 10px;
-  }
-
-  /* BOTTOM ACTIONS */
-  .bottom-actions {
-    margin-top: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 24px;
-    background: white;
-    border: 1.5px solid var(--border);
-    box-shadow: 0 2px 12px var(--shadow);
-  }
-
-  .add-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 11px 20px;
-    border: 1.5px dashed var(--border-dark);
-    background: transparent;
-    color: var(--ink-light);
-    font-size: 13px;
-    font-family: 'Noto Sans TC', sans-serif;
-    cursor: pointer;
-    letter-spacing: 1px;
-    transition: all 0.2s;
-  }
-
+  .section-divider { margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 600; color: #888; letter-spacing: 2px; }
+  .notice { background: #fffbe6; border: 1px solid #f0d060; padding: 12px 16px; font-size: 13px; color: #7a5f00; margin-bottom: 20px; letter-spacing: 0.5px; line-height: 1.8; }
+  .bottom-actions { margin-top: 24px; display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; background: white; border: 1.5px solid var(--border); box-shadow: 0 2px 12px var(--shadow); }
+  .add-btn { display: flex; align-items: center; gap: 8px; padding: 11px 20px; border: 1.5px dashed var(--border-dark); background: transparent; color: var(--ink-light); font-size: 13px; font-family: 'Noto Sans TC', sans-serif; cursor: pointer; letter-spacing: 1px; transition: all 0.2s; }
   .add-btn:hover { border-color: var(--red); color: var(--red); background: #fef9f9; }
   .add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .add-btn:disabled:hover { border-color: var(--border-dark); color: var(--ink-light); background: transparent; }
-
-  .submit-btn {
-    padding: 13px 36px;
-    background: var(--red);
-    color: white;
-    border: none;
-    font-size: 15px;
-    font-family: 'Noto Sans TC', sans-serif;
-    font-weight: 500;
-    cursor: pointer;
-    letter-spacing: 2px;
-    transition: background 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
+  .submit-btn { padding: 13px 36px; background: var(--red); color: white; border: none; font-size: 15px; font-family: 'Noto Sans TC', sans-serif; font-weight: 500; cursor: pointer; letter-spacing: 2px; transition: background 0.2s; }
   .submit-btn:hover { background: var(--red-light); }
-
-  .remove-btn {
-    padding: 7px 14px;
-    background: transparent;
-    border: 1.5px solid #ddd;
-    color: #999;
-    font-size: 12px;
-    font-family: 'Noto Sans TC', sans-serif;
-    cursor: pointer;
-    letter-spacing: 1px;
-    transition: all 0.2s;
-  }
-
+  .remove-btn { padding: 7px 14px; background: transparent; border: 1.5px solid #ddd; color: #999; font-size: 12px; font-family: 'Noto Sans TC', sans-serif; cursor: pointer; letter-spacing: 1px; transition: all 0.2s; }
   .remove-btn:hover { border-color: var(--red); color: var(--red); }
+  .section-divider { margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 600; color: #888; letter-spacing: 2px; }
 
-  /* SUCCESS TOAST */
+  /* TOAST */
   .toast {
-    position: fixed;
-    top: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-80px);
-    background: var(--success);
-    color: white;
-    padding: 16px 28px;
-    font-size: 14px;
-    font-family: 'Noto Sans TC', sans-serif;
-    letter-spacing: 1px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-    z-index: 999;
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    text-align: center;
-    max-width: 90vw;
+    position: fixed; top: 24px; left: 50%;
+    transform: translateX(-50%) translateY(-120px);
+    padding: 16px 28px; font-size: 14px; font-family: 'Noto Sans TC', sans-serif;
+    letter-spacing: 1px; box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    z-index: 9999; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    text-align: center; max-width: 90vw; color: white; border-radius: 2px;
   }
-
   .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.success { background: var(--success); }
+  .toast.error   { background: var(--error); }
 
-  /* LOADING OVERLAY */
-  .overlay {
-    position: fixed; inset: 0;
-    background: rgba(26,26,46,0.6);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 900;
-    flex-direction: column;
-    gap: 16px;
-  }
-
+  /* OVERLAY */
+  .overlay { position: fixed; inset: 0; background: rgba(26,26,46,0.65); display: none; align-items: center; justify-content: center; z-index: 900; flex-direction: column; gap: 16px; }
   .overlay.show { display: flex; }
-
-  .spinner {
-    width: 40px; height: 40px;
-    border: 3px solid rgba(255,255,255,0.2);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-
+  .spinner { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.2); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
+  .overlay-text { color: white; font-size: 14px; letter-spacing: 2px; }
 
-  .overlay-text {
-    color: white;
-    font-size: 14px;
-    letter-spacing: 2px;
-  }
-
-  /* NOTICE */
-  .notice {
-    background: #fffbe6;
-    border: 1px solid #f0d060;
-    padding: 12px 16px;
-    font-size: 13px;
-    color: #7a5f00;
-    margin-bottom: 20px;
-    letter-spacing: 0.5px;
-    line-height: 1.8;
-  }
-
-  /* DIVIDER */
-  .section-divider {
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-    font-size: 12px;
-    font-weight: 600;
-    color: #888;
-    letter-spacing: 2px;
-  }
-
-  @media (max-width: 768px) {
-    .form-row { grid-template-columns: 1fr 1fr; }
-    .form-row-2 { grid-template-columns: 1fr; }
-    header { padding: 16px; }
-    main { padding: 16px 12px; }
-    .bottom-actions { flex-direction: column; gap: 12px; }
-    .grade-tabs { padding: 0 12px; }
-    .grade-tab { padding: 12px 16px; font-size: 13px; }
-  }
+  @media (max-width: 768px) { .form-row { grid-template-columns: 1fr 1fr; } .form-row-2 { grid-template-columns: 1fr; } header { padding: 16px; } main { padding: 16px 12px; } .bottom-actions { flex-direction: column; gap: 12px; } .grade-tabs { padding: 0 12px; } .grade-tab { padding: 12px 16px; font-size: 13px; } }
 </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
 <div id="loginScreen">
   <div class="login-box">
     <div class="login-seal">新竹市立竹光國民中學</div>
@@ -552,16 +122,13 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- LOADING OVERLAY -->
 <div class="overlay" id="overlay">
   <div class="spinner"></div>
-  <div class="overlay-text">資料上傳中，請稍候⋯</div>
+  <div class="overlay-text" id="overlayText">處理中，請稍候⋯</div>
 </div>
 
-<!-- MAIN APP -->
 <div id="app">
   <header>
     <div class="header-left">
@@ -585,108 +152,89 @@
 
   <main>
     <div class="notice">
-      ⚠️ 請填寫完整資料後按「送出並下載勸導單」，系統將自動登錄並下載三聯式 PDF，請務必列印並送至導辦及學務處蓋章。
+      ⚠️ 請填寫完整資料後按「送出並列印勸導單」，系統將自動登錄並開啟列印視窗（三聯式），請列印後送至導辦及學務處蓋章。
     </div>
 
-    <!-- GRADE 7 -->
     <div class="grade-panel active" id="panel7">
-      <div class="grade-header">
-        <div class="grade-title grade-7"><span class="grade-badge"></span>七年級勸導單</div>
-      </div>
+      <div class="grade-header"><div class="grade-title grade-7"><span class="grade-badge"></span>七年級勸導單</div></div>
       <div class="form-cards" id="cards7"></div>
       <div class="bottom-actions">
         <button class="add-btn" id="addBtn7" onclick="addCard(7)">＋ 新增一筆（最多 5 筆）</button>
-        <button class="submit-btn" onclick="submitGrade(7)">✓ 送出並下載勸導單</button>
+        <button class="submit-btn" onclick="submitGrade(7)">✓ 送出並列印勸導單</button>
       </div>
     </div>
 
-    <!-- GRADE 8 -->
     <div class="grade-panel" id="panel8">
-      <div class="grade-header">
-        <div class="grade-title grade-8"><span class="grade-badge"></span>八年級勸導單</div>
-      </div>
+      <div class="grade-header"><div class="grade-title grade-8"><span class="grade-badge"></span>八年級勸導單</div></div>
       <div class="form-cards" id="cards8"></div>
       <div class="bottom-actions">
         <button class="add-btn" id="addBtn8" onclick="addCard(8)">＋ 新增一筆（最多 5 筆）</button>
-        <button class="submit-btn" onclick="submitGrade(8)">✓ 送出並下載勸導單</button>
+        <button class="submit-btn" onclick="submitGrade(8)">✓ 送出並列印勸導單</button>
       </div>
     </div>
 
-    <!-- GRADE 9 -->
     <div class="grade-panel" id="panel9">
-      <div class="grade-header">
-        <div class="grade-title grade-9"><span class="grade-badge"></span>九年級勸導單</div>
-      </div>
+      <div class="grade-header"><div class="grade-title grade-9"><span class="grade-badge"></span>九年級勸導單</div></div>
       <div class="form-cards" id="cards9"></div>
       <div class="bottom-actions">
         <button class="add-btn" id="addBtn9" onclick="addCard(9)">＋ 新增一筆（最多 5 筆）</button>
-        <button class="submit-btn" onclick="submitGrade(9)">✓ 送出並下載勸導單</button>
+        <button class="submit-btn" onclick="submitGrade(9)">✓ 送出並列印勸導單</button>
       </div>
     </div>
   </main>
 </div>
 
 <script>
-// ===================== STUDENT DATA =====================
+// ===================== 學生名單 =====================
 const STUDENTS = {
-  "701": {1:"何家成",2:"洪承言",3:"陳垚勛",4:"陳昱勝",5:"陳禹誠",6:"彭宥翔",7:"黃禹哲",8:"黃瀚毅",9:"楊紹誠",10:"楊曜誠",11:"劉彥柏",12:"劉恩睿",13:"蔡岳廷",14:"鄭儒軒",15:"鄭穎軒",16:"簡子杰",17:"王厘允",18:"何昕玹",19:"孫晨瑀",20:"張羽岑",21:"許羽喬",22:"陳可芯",23:"陳至善",24:"陳妍容",25:"陳宥慈",26:"楊姸芯",27:"楊祐萌",28:"溫妮婷",29:"潘允樂",30:"謝忻甯"},
-  "702": {1:"王廷鎧",2:"王承翔",3:"田聖弘",4:"孟耀梃",5:"林奕睿",6:"邱勇翔",7:"傅彥鈞",8:"彭君玨",9:"黃柏綸",10:"黃義騰",11:"黃裕勛",12:"楊文捷",13:"楊駱頤",14:"劉威毅",15:"鄭羽程",16:"羅翔平",17:"王帷曈",18:"朱晨瑋",19:"吳語忻",20:"呂芯妤",21:"宋昕璇",22:"沈晏彤",23:"林鈺茹",24:"洪羽忻",25:"莊喬琪",26:"黃曉柔",27:"黃曉筠",28:"楊侑恩",29:"楊詠涵",30:"蘇詠淇"},
-  "703": {1:"王甫成",2:"李彥緯",3:"李宸寬",4:"林立昇",5:"施易成",6:"康天旭",7:"張祐誠",8:"陳泓宇",9:"黃彥鳴",10:"楊淯翔",11:"楊祐嘉",12:"鄭永暄",13:"戴家城",14:"謝定翔",15:"任子寧",16:"呂庭頡",17:"林余采兒",18:"林品妤",19:"洪楷婷",20:"張可蒨",21:"曹瑋珊",22:"許閔媃",23:"轉出",24:"彭意晴",25:"楊欣萭",26:"楊淯晴",27:"羅羽羲",28:"羅翎亘"},
-  "704": {1:"何致樑",2:"吳柏鈞",3:"杜紹齊",4:"林靖軒",5:"莊允愷",6:"許宸碩",7:"郭奇樺",8:"轉出",9:"陳宥暟",10:"曾柏綸",11:"曾暄洧",12:"黃御恩",13:"劉愷維",14:"簡浚丞",15:"顏丞寬",16:"呂珮臻",17:"李依珊",18:"林瑋柔",19:"邱楨晴",20:"胡雅涵",21:"張羽彤",22:"張耘甄",23:"許尹嘉",24:"陳怡均",25:"黃亭恩",26:"黃奕瑄",27:"楊宛弦",28:"楊宜璇",29:"劉怡君"},
-  "705": {1:"田庭叡",2:"宋文賢",3:"宋舶鉉",4:"李明哲",5:"杜浩維",6:"周祐安",7:"施君諺",8:"張愷元",9:"郭祐嘉",10:"陳羿閔",11:"陳祖安",12:"葉禹樂",13:"劉日仁",14:"鄭仕杰",15:"鄭喆謙",16:"鄭穎恩",17:"王歆媮",18:"吳葦庭",19:"吳懿恩",20:"林彤卉",21:"林禹辰",22:"翁翎綺",23:"陳怡吟",24:"陳怡彤",25:"曾向妤",26:"黃若晴",27:"蔡可彤",28:"蔡羽雯",29:"蔡逸辰",30:"戴梓甯"},
-  "706": {1:"王冠龍",2:"任宇翔",3:"呂康綸",4:"李彥霆",5:"汪辰汯",6:"周楷晟",7:"林宸君",8:"邱㳖緯",9:"胡方羿",10:"張亞澂",11:"莊尚諰",12:"陳美文",13:"陳睿佑",14:"黃楷庭",15:"魏禎彥",16:"王于宸",17:"吳雨昕",18:"呂予喬",19:"林妤珊",20:"林庭緁",21:"范恩昕",22:"張勍語",23:"陳又禎",24:"陳佳榆",25:"陳玟淇",26:"陳思妤",27:"温梦棣",28:"楊棠甯"},
-  "707": {1:"成翊銘",2:"吳有瑜",3:"吳榮峰",4:"林祐辰",5:"邱安澤",6:"姚品皜",7:"韋聿宸",8:"郭勝旗",9:"陳煜翔",10:"楊翔皓",11:"鄭上廷",12:"鄭丞傑",13:"鄭嵐澤",14:"戴炳皓",15:"謝家瑋",16:"魏靖澐",17:"朱家叡",18:"江采婕",19:"江瑀芩",20:"何品妍",21:"呂宥恩",22:"林洢裴",23:"林郁晴",24:"茹宥霏",25:"許奕瑤",26:"陳依柔",27:"黃多佑",28:"楊品晨",29:"顏嘉萱"},
-  "708": {1:"王曦睿",2:"李承恩",3:"李昱廷",4:"李宸睿",5:"林昊叡",6:"洪睿均",7:"張竣雁",8:"曹宇恩",9:"陳佑泯",10:"曾亭翰",11:"黃垣皓",12:"黃睿詳",13:"鄭翔栢",14:"鄭裕憬",15:"謝承宴",16:"蘇宏育",17:"王儷淇",18:"江亞霏",19:"李淯晴",20:"林禹岑",21:"邱聿婕",22:"邱筠崴",23:"徐采綺",24:"曾羿霏",25:"楊于萱",26:"楊雨玹",27:"蔡樂暄",28:"鄭庭語",29:"謝晨榆",30:"鍾歆怡"},
-  "709": {1:"王君赫",2:"李裕翔",3:"邱靖硯",4:"金宥均",5:"張序霆",6:"梁淯翔",7:"郭庭邑",8:"陳伯翊",9:"陳序愷",10:"陳俊錡",11:"陳竑豫",12:"陳翊嘉",13:"曾晧瑀",14:"黃靖崴",15:"鄧峻凱",16:"謝雲軒",17:"朱妍淳",18:"吳亭緰",19:"林宜珊",20:"林明漵",21:"林姸樂",22:"柳靜知",23:"洪千艾",24:"徐語辰",25:"張沐芸",26:"張恩綺",27:"張詠晴",28:"許惠珍",29:"黃妍禎"},
-  "710": {1:"方浩明",2:"江恩宇",3:"吳叡安",4:"周士翔",5:"林子紳",6:"林霆譽",7:"林叡陞",8:"張滕洧",9:"陳侑聖",10:"陳彥霖",11:"曾治浩",12:"黃祥睿",13:"楊哲瑋",14:"楊鈞皓",15:"楊曄",16:"鄭宇桐",17:"江依梵",18:"李淯晴",19:"李婷恩",20:"梁岑熙",21:"許奕嬋",22:"陳安綺",23:"陳思彤",24:"陳羿媜",25:"詹硯喬",26:"戴羽彤",27:"謝佳臻",28:"韓沛慈",29:"蘇姵尹"},
-  "711": {1:"丁浩衽",2:"王紹宇",3:"紀明酉",4:"倪丞威",5:"張佑愷",6:"陳泓暢",7:"陳彥穎",8:"彭璿均",9:"曾俊赫",10:"曾楷崴",11:"楊承曄",12:"葉于睿",13:"鄭博睿",14:"鄭聖諺",15:"鍾亞皓",16:"轉出",17:"王婕綾",18:"邱婉庭",19:"夏廷甄",20:"許沛淳",21:"郭宸妍",22:"陳禹彤",23:"彭妍昕",24:"曾聖芝",25:"楊珞可",26:"溫子榆",27:"葉芷寧",28:"蔣詠晴",29:"嚴麗緹"},
-  "712": {1:"王晟儒",2:"吳日希",3:"吳冠翔",4:"吳宸瑋",5:"吳愷倢",6:"李辰宇",7:"轉出",8:"陳尚謙",9:"陳奕銜",10:"彭彥鈞",11:"彭懷森",12:"童俋霖",13:"黃佑群",14:"劉恩廷",15:"劉耀隆",16:"謝亞辰",17:"王思惠",18:"李瓖芸",19:"林子心",20:"張雨甯",21:"張媛淇",22:"張紫翎",23:"曾宥寧",24:"楊芷瑄",25:"楊宥妮",26:"劉昀璇",27:"劉芸卉",28:"劉奕葳",29:"蕭瑀彤"},
-  "801": {1:"吳承翀",2:"吳昊謙",3:"吳珉錠",4:"李存彥",5:"李行博(保)",6:"林永鑫",7:"林政呈",8:"陳宥皓",9:"黃百佑",10:"黃柏睿",11:"楊元辰",12:"鄭宇諺",13:"賴威利",14:"饒子申",15:"王品芯",16:"王苡倢",17:"呂采宣",18:"李芊慧",19:"林芊語",20:"姚梓菱",21:"洪苡甄",22:"洪靖涵",23:"范妤宣",24:"張彤瑀",25:"彭靖芸",26:"華均羚",27:"楊沛諠",28:"鄭羽珊"},
-  "802": {1:"朱紘岑",2:"李宥霆",3:"貝揚義",4:"周侑霆",5:"林冠霖",6:"陳品呈",7:"陳頎安",8:"彭奕杰",9:"曾宥齊",10:"曾柏楷",11:"曾珈紳",12:"黃子其",13:"轉出",14:"蔡承佑",15:"鍾泓宇",16:"朱讌竹",17:"呂恩葶",18:"林亭妤",19:"范紫盈",20:"許羽葳",21:"曾姸喬",22:"黃雁緹",23:"葉孟媛",24:"廖紫晴",25:"蔡宜澖",26:"蔡雨希",27:"蔡雨彤",28:"鄭婕翎",29:"韓沛妤"},
-  "803": {1:"包浩宇",2:"吳昀勍",3:"吳奕翰",4:"周頎祐",5:"林志峰",6:"林昱澄",7:"徐榮進",8:"陳廷帥",9:"黃世帆",10:"溫喬閎",11:"蔡松霖",12:"蔡智勝",13:"戴佑嘉",14:"韓侑勳",15:"蘇煜翔",16:"王曉晴",17:"林庭萱",18:"胡毓芩",19:"徐意涵",20:"張羽晴",21:"陳妍如",22:"轉出",23:"游晴羽",24:"覃妍甄",25:"楊雨澄",26:"劉晨舟",27:"轉出",28:"潘昕儀",29:"蔡欣頤"},
-  "804": {1:"王宗右",2:"王宸御",3:"吳易洧",4:"吳昱霆",5:"周升華",6:"林承緒",7:"林彥呈",8:"范盛旭",9:"徐培睿",10:"陳廷瑜",11:"轉出",12:"黃竣彥",13:"劉子郡",14:"魏振宇",15:"方羿尹",16:"任芯樂",17:"朱恩逸",18:"吳宜蓁",19:"吳宥昕",20:"李品萱",21:"周恩誼",22:"范苡軒",23:"郭雨緁",24:"黃怡蓉",25:"鄞宇晴",26:"轉出",27:"蔡沛璇",28:"簡言庭"},
-  "805": {1:"吳彥廷",2:"林晉辰",3:"林海濤",4:"洪啟綸",5:"張程皓",6:"張睿宬",7:"陳宥呈",8:"曾子沛",9:"黃禾綱",10:"楊承旭",11:"楊恩昊",12:"劉育宏",13:"劉家樂",14:"蔡立楷",15:"鄭永祺",16:"王羽霏",17:"林薇恩",18:"轉出",19:"陳亭安",20:"陳奕靜",21:"程筠芸",22:"劉宥妏",23:"鄭以沛",24:"鄭巧渝",25:"鄭巧歆",26:"鄭采婕",27:"謝沛岑",28:"謝儀萱",29:"蘇榆桐"},
-  "806": {1:"王宥承",2:"轉出",3:"余書騰",4:"轉出",5:"林育澤",6:"林昱瑋",7:"邱宇陽",8:"姚日珅",9:"胡佑睿",10:"徐晨皓",11:"陳易玹",12:"張祐杰",13:"楊天辰",14:"楊秉紘",15:"葉昶言",16:"李綵嫣",17:"范媞茵",18:"張書萁",19:"陳妍昕",20:"陳怡蓉",21:"陳品諠",22:"陳宥如",23:"陳羿含",24:"陳楓奇",25:"葉禹彤",26:"廖文甄",27:"劉梓妤",28:"轉出",29:"蘇欣宜"},
-  "807": {1:"江秉勳",2:"吳允睿",3:"吳瑞凡",4:"李昕泓",5:"周恩睿",6:"林佑勳",7:"林珉霆",8:"洪源楷",9:"韋子誠",10:"倪浚晏",11:"張芮豪",12:"張家竣",13:"莊玄麒",14:"楊天宇",15:"劉宥圻",16:"吳昀軒",17:"李沛瑜",18:"洪敏瑄",19:"孫歆琳",20:"高佳圻",21:"張華臻(保)",22:"連翊涵",23:"郭晏寧",24:"陳宥希",25:"彭靖婷",26:"蔡昀靜",27:"蔡姿妘",28:"魏羽彤",29:"魏羽玨"},
-  "808": {1:"吳柏銳",2:"林丞彥",3:"轉出",4:"侯侑辰",5:"施竣晨",6:"徐溢隆",7:"陳奕佑",8:"陳畇岑",9:"陳盈德",10:"彭沁哲",11:"彭威凱",12:"黃士驊",13:"楊家祐",14:"謝秉祐",15:"羅翌源",16:"王資穎",17:"吳知璇",18:"呂予恩",19:"林沛妤",20:"姚明衣",21:"徐芯妍",22:"徐曼甄",23:"張雨晴",24:"陳緹琳",25:"轉出",26:"葉臻",27:"趙樂涵",28:"鄭文詠",29:"簡妘珊",30:"林彥鈞"},
-  "809": {1:"王子升",2:"王煊皓",3:"石子樂",4:"李有正",5:"邱宥勛",6:"洪東靖",7:"張敦皓",8:"張銘仁",9:"曾佾盛",10:"楊鈞丞",11:"鄭亦宏",12:"謝亦宸",13:"蘇稚洋",14:"龔偉銍",15:"王宥婷",16:"吳巧馨",17:"吳雨璇",18:"卓愛唯",19:"林湘晴",20:"邱苡涵",21:"張閔涵",22:"許宸熙",23:"傅暄晴",24:"楊于樂",25:"蔡欣樺",26:"蔡羿暄",27:"謝勻婕",28:"謝佾恩"},
-  "810": {1:"吳愛羅",2:"吳懿倫",3:"周冠霆",4:"張丞勛",5:"張品澤",6:"郭晉瑋",7:"陳孟承",8:"陳奕駩",9:"陶立軒",10:"楊煜承",11:"蔡承家",12:"鄭伋晉",13:"鄭博丞",14:"賴昱辰",15:"羅濟辰",16:"吳偊緁",17:"汪芯語",18:"林芸靚",19:"姚伊珊",20:"陳妍姿",21:"彭湘涵",22:"黃鉉淳",23:"楊子玉",24:"楊芳宜",25:"廖奕亭",26:"鄭伊晴",27:"戴宜妏",28:"鍾恢婷",29:"蘇彩瑄"},
-  "811": {1:"王伯雅",2:"王泓恩",3:"林宥叡",4:"林笠翔",5:"康天宇",6:"張忠豪",7:"張湧晨",8:"許种梁",9:"郭力安",10:"陳品嚴",11:"黃祤倢",12:"楊淯翔",13:"趙少揚",14:"蔡林辰",15:"薛丞軒",16:"何家喬",17:"李怡萱",18:"張育慈",19:"陳佳暄",20:"黃玟禎",21:"楊子卉",22:"楊晨妤",23:"楊湘婷",24:"葉禹彤",25:"葉潔縈",26:"蔡卉怡",27:"鄭欣妮",28:"戴沂歆",29:"羅玉宣"},
-  "812": {1:"王竑寯",2:"王偉承",3:"王藝綸",4:"林家羽",5:"林祐群",6:"林錫靖",7:"許郁澤",8:"許恩綦",9:"陳柏安",10:"陳聖翰",11:"彭凱鍏",12:"詹朝文",13:"詹朝宇",14:"鄭永杰",15:"駱癸宇",16:"方品甯",17:"王億心",18:"朱庭萱",19:"吳晨熙",20:"呂珮瑜",21:"周子凈",22:"陳可芯",23:"陳雨榛",24:"陳宣瑄",25:"陳語彤",26:"陳語晴",27:"黃璿",28:"蔡沛晴",29:"鐘婷郁"},
-  "901": {1:"李耘承",2:"張紹鋒",3:"張鈞淯",4:"許文豪",5:"許奕呈",6:"轉出",7:"轉出",8:"黃育皜",9:"黃維晨",10:"楊承諺",11:"楊逸翔",12:"劉晉志",13:"鄭家安",14:"鄭裕祈",15:"戴浚洺",16:"魏子喻",17:"方之希",18:"王晴嵐",19:"轉出",20:"李潔俞",21:"洪敏慈",22:"倪心彤",23:"徐亘邑",24:"徐妍溱",25:"張庭",26:"張莉和",27:"陳妤喬",28:"陳靜嫄"},
-  "902": {1:"何彥均",2:"轉出",3:"阮優權",4:"林泓穎",5:"邱品碩",6:"張恩碩",7:"莊承祐",8:"郭承裕",9:"陳劭奇",10:"陳冠熙",11:"陳品諾",12:"陳彥鈞",13:"楊承鈞",14:"葉星和",15:"鄭毓祐",16:"轉出",17:"王銨萱",18:"何樂莘",19:"呂昕",20:"林幼秦",21:"張芸榛",22:"陳妤欣",23:"彭喬莞",24:"曾俐旻",25:"曾禹菲",26:"温凱瑢",27:"黃昱綺",28:"轉出"},
-  "903": {1:"王俊翔",2:"朱少侖",3:"江秉綋",4:"轉出",5:"林彥宏",6:"林峰銘",7:"邱靖崴",8:"梁睿桐",9:"黃彥成",10:"黃柏沅",11:"楊喬善",12:"楊曜銘",13:"廖品蓉",14:"蔡岳庭",15:"鄭品睿",16:"嚴承豪",17:"王姿璇",18:"王靖茹",19:"吳怡霈",20:"吳昕穎",21:"李永貞",22:"洪千淳",23:"轉出",24:"張閔琁",25:"莊惟晴",26:"彭宣妮",27:"楊喻雯"},
-  "904": {1:"王志強",2:"王品侖",3:"吳祐睿",4:"周恩霆",5:"林奕勳",6:"轉出",7:"倪浚齊",8:"張家維",9:"張瑋宸",10:"陳立恩",11:"黃凡恩",12:"葉富裕",13:"鄭滈",14:"謝丞祐",15:"謝廣浩",16:"鍾昊廷",17:"宋佩欣",18:"李芯葵",19:"張妤榛",20:"陳美月",21:"楊婕琳",22:"鄭文涵",23:"轉出",24:"戴苡安",25:"謝孟芩",26:"鍾沂璇",27:"顏芯彤",28:"羅宇岑"},
-  "905": {1:"王廷睿",2:"王宥承",3:"呂彥廷",4:"汪奕宏(病)",5:"林承諺",6:"柯承宏",7:"郭家睿",8:"陳政嘉",9:"曾柏軒",10:"黃冠儒",11:"黃星硯",12:"轉出",13:"溫家寶",14:"蔡丞恩",15:"蔣秉綸",16:"鄭宇鈞",17:"鄭淯桓",18:"孔云靚",19:"王盈瑜",20:"轉出",21:"胡羽薰",22:"轉出",23:"曾嬿恩",24:"轉出",25:"劉芳萍",26:"蔡宜宸",27:"轉出",28:"鄧心霏",29:"侯允喬"},
-  "906": {1:"丁品睿",2:"王柏惟",3:"王瑋均",4:"朱騤閎",5:"吳一秀",6:"吳秉家",7:"呂沅恩",8:"李品彥",9:"邱楨皓",10:"紀品言",11:"張境全",12:"連駿",13:"曾至佑",14:"楊宸昊",15:"葉子毅",16:"簡俊彥",17:"江孟如",18:"吳予心",19:"吳婷萱",20:"李宜臻",21:"沈俞岑",22:"周葦蓁",23:"邱芷歆",24:"許晏綾",25:"陳禹臻",26:"黃淮晨",27:"楊忻綾"},
-  "907": {1:"吳哲凱",2:"吳哲翔",3:"吳峻賢",4:"呂宥玄",5:"林琮勛",6:"洪丞亮",7:"胡仁玠",8:"翁宇威",9:"陳志旭",10:"曾琮翔",11:"溫彥瑀",12:"劉宇翰",13:"劉芃邑",14:"潘克維",15:"簡宥丞",16:"羅天輿",17:"王湘婷",18:"吳郁善",19:"周芸萱",20:"孫楀童",21:"徐薇善",22:"張芯敔",23:"莊雨潔",24:"郭妘涵",25:"轉出",26:"蔡羽晴",27:"蔡芸庭",28:"蕭妤芸"},
-  "908": {1:"何承恩",2:"吳杰恩",3:"吳祐杰",4:"呂奇恩",5:"呂宣澔",6:"林子家",7:"林子勛",8:"姚秀宸",9:"夏廷碩",10:"莊祐豪",11:"陳禹安",12:"陶立恩",13:"曾律誠",14:"楊子肋",15:"葉貞均",16:"羅宥鈞",17:"羅凱嚴",18:"王妘菲",19:"何芯羽",20:"吳姵潔",21:"呂芷漩",22:"林俞辰",23:"陳嘉昀",24:"彭恩憫",25:"曾禹瑄",26:"趙品瑄",27:"鄭渝諼",28:"盧道姸"},
-  "909": {1:"丁弋",2:"方子郡",3:"王家喆",4:"江柏萱",5:"林彥杰",6:"林楷恆",7:"姜彥綸",8:"胡至棠",9:"張珉維",10:"張峻瑋",11:"陳鼎文",12:"陳賢澔",13:"温品洋",14:"楊宥棠",15:"劉家佑",16:"戴志豪",17:"鍾至崴",18:"宋銘芳",19:"李沄璇",20:"李苡瑄",21:"林彤恩",22:"林禹彤",23:"邱品喬",24:"陳羽楺",25:"彭茹溦",26:"曾芳翎",27:"楊絜瑀",28:"楊舒羽"},
-  "910": {1:"朱柏元",2:"朱駖獻",3:"吳奕澂",4:"吳晟昊",5:"宋茲易",6:"郭昱賢",7:"陳鍇毅",8:"彭于瑒",9:"曾陳德嵩",10:"黃兆隆",11:"黃邦齊",12:"黃宥晟",13:"楊哲典",14:"潘承銳",15:"鄧裕哲",16:"羅思杰",17:"吳宜庭",18:"吳羿嫻",19:"吳湘妘",20:"轉出",21:"轉出",22:"林彤恩",23:"張芯睿",24:"轉出",25:"黃韋綸",26:"鄭家霓",27:"轉出"},
-  "911": {1:"李恪明",2:"轉出",3:"林奕辰",4:"洪睿辰",5:"相良蒔(保)",6:"胡定恆",7:"許玄侑",8:"陳柏劭",9:"彭澤希",10:"曾彥承",11:"曾祥家",12:"黃子峻",13:"黃閔聖",14:"楊元富",15:"楊凱翔",16:"劉愷揚",17:"余旖茜",18:"孫品菲",19:"張簡育琳",20:"梁雅萱",21:"陳君宜",22:"陳妍希",23:"陳侑煊",24:"彭湘珺",25:"鄭佳函",26:"鄭詩晴",27:"謝盈婕",28:"蘇嘉玲"},
-  "912": {1:"江文賢",2:"吳宥霆",3:"吳致穎",4:"李佳樺",5:"洪浩瑋",6:"唐楚鈞",7:"轉出",8:"張立",9:"張鈞澔",10:"梁正承",11:"陳伽鈞",12:"陳品杰",13:"陳祈寧",14:"陳峻頎",15:"楊岷勲",16:"楊赫",17:"蔡廉濠",18:"王億珊",19:"吳晏甄",20:"林鈺蕓",21:"范芷綾",22:"徐羽萱",23:"張羽廷",24:"郭育彤",25:"轉出",26:"楊宜家",27:"廖禹晴",28:"戴羽岑",29:"呂幸娟"},
+  "701":{1:"何家成",2:"洪承言",3:"陳垚勛",4:"陳昱勝",5:"陳禹誠",6:"彭宥翔",7:"黃禹哲",8:"黃瀚毅",9:"楊紹誠",10:"楊曜誠",11:"劉彥柏",12:"劉恩睿",13:"蔡岳廷",14:"鄭儒軒",15:"鄭穎軒",16:"簡子杰",17:"王厘允",18:"何昕玹",19:"孫晨瑀",20:"張羽岑",21:"許羽喬",22:"陳可芯",23:"陳至善",24:"陳妍容",25:"陳宥慈",26:"楊姸芯",27:"楊祐萌",28:"溫妮婷",29:"潘允樂",30:"謝忻甯"},
+  "702":{1:"王廷鎧",2:"王承翔",3:"田聖弘",4:"孟耀梃",5:"林奕睿",6:"邱勇翔",7:"傅彥鈞",8:"彭君玨",9:"黃柏綸",10:"黃義騰",11:"黃裕勛",12:"楊文捷",13:"楊駱頤",14:"劉威毅",15:"鄭羽程",16:"羅翔平",17:"王帷曈",18:"朱晨瑋",19:"吳語忻",20:"呂芯妤",21:"宋昕璇",22:"沈晏彤",23:"林鈺茹",24:"洪羽忻",25:"莊喬琪",26:"黃曉柔",27:"黃曉筠",28:"楊侑恩",29:"楊詠涵",30:"蘇詠淇"},
+  "703":{1:"王甫成",2:"李彥緯",3:"李宸寬",4:"林立昇",5:"施易成",6:"康天旭",7:"張祐誠",8:"陳泓宇",9:"黃彥鳴",10:"楊淯翔",11:"楊祐嘉",12:"鄭永暄",13:"戴家城",14:"謝定翔",15:"任子寧",16:"呂庭頡",17:"林余采兒",18:"林品妤",19:"洪楷婷",20:"張可蒨",21:"曹瑋珊",22:"許閔媃",23:"轉出",24:"彭意晴",25:"楊欣萭",26:"楊淯晴",27:"羅羽羲",28:"羅翎亘"},
+  "704":{1:"何致樑",2:"吳柏鈞",3:"杜紹齊",4:"林靖軒",5:"莊允愷",6:"許宸碩",7:"郭奇樺",8:"轉出",9:"陳宥暟",10:"曾柏綸",11:"曾暄洧",12:"黃御恩",13:"劉愷維",14:"簡浚丞",15:"顏丞寬",16:"呂珮臻",17:"李依珊",18:"林瑋柔",19:"邱楨晴",20:"胡雅涵",21:"張羽彤",22:"張耘甄",23:"許尹嘉",24:"陳怡均",25:"黃亭恩",26:"黃奕瑄",27:"楊宛弦",28:"楊宜璇",29:"劉怡君"},
+  "705":{1:"田庭叡",2:"宋文賢",3:"宋舶鉉",4:"李明哲",5:"杜浩維",6:"周祐安",7:"施君諺",8:"張愷元",9:"郭祐嘉",10:"陳羿閔",11:"陳祖安",12:"葉禹樂",13:"劉日仁",14:"鄭仕杰",15:"鄭喆謙",16:"鄭穎恩",17:"王歆媮",18:"吳葦庭",19:"吳懿恩",20:"林彤卉",21:"林禹辰",22:"翁翎綺",23:"陳怡吟",24:"陳怡彤",25:"曾向妤",26:"黃若晴",27:"蔡可彤",28:"蔡羽雯",29:"蔡逸辰",30:"戴梓甯"},
+  "706":{1:"王冠龍",2:"任宇翔",3:"呂康綸",4:"李彥霆",5:"汪辰汯",6:"周楷晟",7:"林宸君",8:"邱㳖緯",9:"胡方羿",10:"張亞澂",11:"莊尚諰",12:"陳美文",13:"陳睿佑",14:"黃楷庭",15:"魏禎彥",16:"王于宸",17:"吳雨昕",18:"呂予喬",19:"林妤珊",20:"林庭緁",21:"范恩昕",22:"張勍語",23:"陳又禎",24:"陳佳榆",25:"陳玟淇",26:"陳思妤",27:"温梦棣",28:"楊棠甯"},
+  "707":{1:"成翊銘",2:"吳有瑜",3:"吳榮峰",4:"林祐辰",5:"邱安澤",6:"姚品皜",7:"韋聿宸",8:"郭勝旗",9:"陳煜翔",10:"楊翔皓",11:"鄭上廷",12:"鄭丞傑",13:"鄭嵐澤",14:"戴炳皓",15:"謝家瑋",16:"魏靖澐",17:"朱家叡",18:"江采婕",19:"江瑀芩",20:"何品妍",21:"呂宥恩",22:"林洢裴",23:"林郁晴",24:"茹宥霏",25:"許奕瑤",26:"陳依柔",27:"黃多佑",28:"楊品晨",29:"顏嘉萱"},
+  "708":{1:"王曦睿",2:"李承恩",3:"李昱廷",4:"李宸睿",5:"林昊叡",6:"洪睿均",7:"張竣雁",8:"曹宇恩",9:"陳佑泯",10:"曾亭翰",11:"黃垣皓",12:"黃睿詳",13:"鄭翔栢",14:"鄭裕憬",15:"謝承宴",16:"蘇宏育",17:"王儷淇",18:"江亞霏",19:"李淯晴",20:"林禹岑",21:"邱聿婕",22:"邱筠崴",23:"徐采綺",24:"曾羿霏",25:"楊于萱",26:"楊雨玹",27:"蔡樂暄",28:"鄭庭語",29:"謝晨榆",30:"鍾歆怡"},
+  "709":{1:"王君赫",2:"李裕翔",3:"邱靖硯",4:"金宥均",5:"張序霆",6:"梁淯翔",7:"郭庭邑",8:"陳伯翊",9:"陳序愷",10:"陳俊錡",11:"陳竑豫",12:"陳翊嘉",13:"曾晧瑀",14:"黃靖崴",15:"鄧峻凱",16:"謝雲軒",17:"朱妍淳",18:"吳亭緰",19:"林宜珊",20:"林明漵",21:"林姸樂",22:"柳靜知",23:"洪千艾",24:"徐語辰",25:"張沐芸",26:"張恩綺",27:"張詠晴",28:"許惠珍",29:"黃妍禎"},
+  "710":{1:"方浩明",2:"江恩宇",3:"吳叡安",4:"周士翔",5:"林子紳",6:"林霆譽",7:"林叡陞",8:"張滕洧",9:"陳侑聖",10:"陳彥霖",11:"曾治浩",12:"黃祥睿",13:"楊哲瑋",14:"楊鈞皓",15:"楊曄",16:"鄭宇桐",17:"江依梵",18:"李淯晴",19:"李婷恩",20:"梁岑熙",21:"許奕嬋",22:"陳安綺",23:"陳思彤",24:"陳羿媜",25:"詹硯喬",26:"戴羽彤",27:"謝佳臻",28:"韓沛慈",29:"蘇姵尹"},
+  "711":{1:"丁浩衽",2:"王紹宇",3:"紀明酉",4:"倪丞威",5:"張佑愷",6:"陳泓暢",7:"陳彥穎",8:"彭璿均",9:"曾俊赫",10:"曾楷崴",11:"楊承曄",12:"葉于睿",13:"鄭博睿",14:"鄭聖諺",15:"鍾亞皓",16:"轉出",17:"王婕綾",18:"邱婉庭",19:"夏廷甄",20:"許沛淳",21:"郭宸妍",22:"陳禹彤",23:"彭妍昕",24:"曾聖芝",25:"楊珞可",26:"溫子榆",27:"葉芷寧",28:"蔣詠晴",29:"嚴麗緹"},
+  "712":{1:"王晟儒",2:"吳日希",3:"吳冠翔",4:"吳宸瑋",5:"吳愷倢",6:"李辰宇",7:"轉出",8:"陳尚謙",9:"陳奕銜",10:"彭彥鈞",11:"彭懷森",12:"童俋霖",13:"黃佑群",14:"劉恩廷",15:"劉耀隆",16:"謝亞辰",17:"王思惠",18:"李瓖芸",19:"林子心",20:"張雨甯",21:"張媛淇",22:"張紫翎",23:"曾宥寧",24:"楊芷瑄",25:"楊宥妮",26:"劉昀璇",27:"劉芸卉",28:"劉奕葳",29:"蕭瑀彤"},
+  "801":{1:"吳承翀",2:"吳昊謙",3:"吳珉錠",4:"李存彥",5:"李行博(保)",6:"林永鑫",7:"林政呈",8:"陳宥皓",9:"黃百佑",10:"黃柏睿",11:"楊元辰",12:"鄭宇諺",13:"賴威利",14:"饒子申",15:"王品芯",16:"王苡倢",17:"呂采宣",18:"李芊慧",19:"林芊語",20:"姚梓菱",21:"洪苡甄",22:"洪靖涵",23:"范妤宣",24:"張彤瑀",25:"彭靖芸",26:"華均羚",27:"楊沛諠",28:"鄭羽珊"},
+  "802":{1:"朱紘岑",2:"李宥霆",3:"貝揚義",4:"周侑霆",5:"林冠霖",6:"陳品呈",7:"陳頎安",8:"彭奕杰",9:"曾宥齊",10:"曾柏楷",11:"曾珈紳",12:"黃子其",13:"轉出",14:"蔡承佑",15:"鍾泓宇",16:"朱讌竹",17:"呂恩葶",18:"林亭妤",19:"范紫盈",20:"許羽葳",21:"曾姸喬",22:"黃雁緹",23:"葉孟媛",24:"廖紫晴",25:"蔡宜澖",26:"蔡雨希",27:"蔡雨彤",28:"鄭婕翎",29:"韓沛妤"},
+  "803":{1:"包浩宇",2:"吳昀勍",3:"吳奕翰",4:"周頎祐",5:"林志峰",6:"林昱澄",7:"徐榮進",8:"陳廷帥",9:"黃世帆",10:"溫喬閎",11:"蔡松霖",12:"蔡智勝",13:"戴佑嘉",14:"韓侑勳",15:"蘇煜翔",16:"王曉晴",17:"林庭萱",18:"胡毓芩",19:"徐意涵",20:"張羽晴",21:"陳妍如",22:"轉出",23:"游晴羽",24:"覃妍甄",25:"楊雨澄",26:"劉晨舟",27:"轉出",28:"潘昕儀",29:"蔡欣頤"},
+  "804":{1:"王宗右",2:"王宸御",3:"吳易洧",4:"吳昱霆",5:"周升華",6:"林承緒",7:"林彥呈",8:"范盛旭",9:"徐培睿",10:"陳廷瑜",11:"轉出",12:"黃竣彥",13:"劉子郡",14:"魏振宇",15:"方羿尹",16:"任芯樂",17:"朱恩逸",18:"吳宜蓁",19:"吳宥昕",20:"李品萱",21:"周恩誼",22:"范苡軒",23:"郭雨緁",24:"黃怡蓉",25:"鄞宇晴",26:"轉出",27:"蔡沛璇",28:"簡言庭"},
+  "805":{1:"吳彥廷",2:"林晉辰",3:"林海濤",4:"洪啟綸",5:"張程皓",6:"張睿宬",7:"陳宥呈",8:"曾子沛",9:"黃禾綱",10:"楊承旭",11:"楊恩昊",12:"劉育宏",13:"劉家樂",14:"蔡立楷",15:"鄭永祺",16:"王羽霏",17:"林薇恩",18:"轉出",19:"陳亭安",20:"陳奕靜",21:"程筠芸",22:"劉宥妏",23:"鄭以沛",24:"鄭巧渝",25:"鄭巧歆",26:"鄭采婕",27:"謝沛岑",28:"謝儀萱",29:"蘇榆桐"},
+  "806":{1:"王宥承",2:"轉出",3:"余書騰",4:"轉出",5:"林育澤",6:"林昱瑋",7:"邱宇陽",8:"姚日珅",9:"胡佑睿",10:"徐晨皓",11:"陳易玹",12:"張祐杰",13:"楊天辰",14:"楊秉紘",15:"葉昶言",16:"李綵嫣",17:"范媞茵",18:"張書萁",19:"陳妍昕",20:"陳怡蓉",21:"陳品諠",22:"陳宥如",23:"陳羿含",24:"陳楓奇",25:"葉禹彤",26:"廖文甄",27:"劉梓妤",28:"轉出",29:"蘇欣宜"},
+  "807":{1:"江秉勳",2:"吳允睿",3:"吳瑞凡",4:"李昕泓",5:"周恩睿",6:"林佑勳",7:"林珉霆",8:"洪源楷",9:"韋子誠",10:"倪浚晏",11:"張芮豪",12:"張家竣",13:"莊玄麒",14:"楊天宇",15:"劉宥圻",16:"吳昀軒",17:"李沛瑜",18:"洪敏瑄",19:"孫歆琳",20:"高佳圻",21:"張華臻(保)",22:"連翊涵",23:"郭晏寧",24:"陳宥希",25:"彭靖婷",26:"蔡昀靜",27:"蔡姿妘",28:"魏羽彤",29:"魏羽玨"},
+  "808":{1:"吳柏銳",2:"林丞彥",3:"轉出",4:"侯侑辰",5:"施竣晨",6:"徐溢隆",7:"陳奕佑",8:"陳畇岑",9:"陳盈德",10:"彭沁哲",11:"彭威凱",12:"黃士驊",13:"楊家祐",14:"謝秉祐",15:"羅翌源",16:"王資穎",17:"吳知璇",18:"呂予恩",19:"林沛妤",20:"姚明衣",21:"徐芯妍",22:"徐曼甄",23:"張雨晴",24:"陳緹琳",25:"轉出",26:"葉臻",27:"趙樂涵",28:"鄭文詠",29:"簡妘珊",30:"林彥鈞"},
+  "809":{1:"王子升",2:"王煊皓",3:"石子樂",4:"李有正",5:"邱宥勛",6:"洪東靖",7:"張敦皓",8:"張銘仁",9:"曾佾盛",10:"楊鈞丞",11:"鄭亦宏",12:"謝亦宸",13:"蘇稚洋",14:"龔偉銍",15:"王宥婷",16:"吳巧馨",17:"吳雨璇",18:"卓愛唯",19:"林湘晴",20:"邱苡涵",21:"張閔涵",22:"許宸熙",23:"傅暄晴",24:"楊于樂",25:"蔡欣樺",26:"蔡羿暄",27:"謝勻婕",28:"謝佾恩"},
+  "810":{1:"吳愛羅",2:"吳懿倫",3:"周冠霆",4:"張丞勛",5:"張品澤",6:"郭晉瑋",7:"陳孟承",8:"陳奕駩",9:"陶立軒",10:"楊煜承",11:"蔡承家",12:"鄭伋晉",13:"鄭博丞",14:"賴昱辰",15:"羅濟辰",16:"吳偊緁",17:"汪芯語",18:"林芸靚",19:"姚伊珊",20:"陳妍姿",21:"彭湘涵",22:"黃鉉淳",23:"楊子玉",24:"楊芳宜",25:"廖奕亭",26:"鄭伊晴",27:"戴宜妏",28:"鍾恢婷",29:"蘇彩瑄"},
+  "811":{1:"王伯雅",2:"王泓恩",3:"林宥叡",4:"林笠翔",5:"康天宇",6:"張忠豪",7:"張湧晨",8:"許种梁",9:"郭力安",10:"陳品嚴",11:"黃祤倢",12:"楊淯翔",13:"趙少揚",14:"蔡林辰",15:"薛丞軒",16:"何家喬",17:"李怡萱",18:"張育慈",19:"陳佳暄",20:"黃玟禎",21:"楊子卉",22:"楊晨妤",23:"楊湘婷",24:"葉禹彤",25:"葉潔縈",26:"蔡卉怡",27:"鄭欣妮",28:"戴沂歆",29:"羅玉宣"},
+  "812":{1:"王竑寯",2:"王偉承",3:"王藝綸",4:"林家羽",5:"林祐群",6:"林錫靖",7:"許郁澤",8:"許恩綦",9:"陳柏安",10:"陳聖翰",11:"彭凱鍏",12:"詹朝文",13:"詹朝宇",14:"鄭永杰",15:"駱癸宇",16:"方品甯",17:"王億心",18:"朱庭萱",19:"吳晨熙",20:"呂珮瑜",21:"周子凈",22:"陳可芯",23:"陳雨榛",24:"陳宣瑄",25:"陳語彤",26:"陳語晴",27:"黃璿",28:"蔡沛晴",29:"鐘婷郁"},
+  "901":{1:"李耘承",2:"張紹鋒",3:"張鈞淯",4:"許文豪",5:"許奕呈",6:"轉出",7:"轉出",8:"黃育皜",9:"黃維晨",10:"楊承諺",11:"楊逸翔",12:"劉晉志",13:"鄭家安",14:"鄭裕祈",15:"戴浚洺",16:"魏子喻",17:"方之希",18:"王晴嵐",19:"轉出",20:"李潔俞",21:"洪敏慈",22:"倪心彤",23:"徐亘邑",24:"徐妍溱",25:"張庭",26:"張莉和",27:"陳妤喬",28:"陳靜嫄"},
+  "902":{1:"何彥均",2:"轉出",3:"阮優權",4:"林泓穎",5:"邱品碩",6:"張恩碩",7:"莊承祐",8:"郭承裕",9:"陳劭奇",10:"陳冠熙",11:"陳品諾",12:"陳彥鈞",13:"楊承鈞",14:"葉星和",15:"鄭毓祐",16:"轉出",17:"王銨萱",18:"何樂莘",19:"呂昕",20:"林幼秦",21:"張芸榛",22:"陳妤欣",23:"彭喬莞",24:"曾俐旻",25:"曾禹菲",26:"温凱瑢",27:"黃昱綺",28:"轉出"},
+  "903":{1:"王俊翔",2:"朱少侖",3:"江秉綋",4:"轉出",5:"林彥宏",6:"林峰銘",7:"邱靖崴",8:"梁睿桐",9:"黃彥成",10:"黃柏沅",11:"楊喬善",12:"楊曜銘",13:"廖品蓉",14:"蔡岳庭",15:"鄭品睿",16:"嚴承豪",17:"王姿璇",18:"王靖茹",19:"吳怡霈",20:"吳昕穎",21:"李永貞",22:"洪千淳",23:"轉出",24:"張閔琁",25:"莊惟晴",26:"彭宣妮",27:"楊喻雯"},
+  "904":{1:"王志強",2:"王品侖",3:"吳祐睿",4:"周恩霆",5:"林奕勳",6:"轉出",7:"倪浚齊",8:"張家維",9:"張瑋宸",10:"陳立恩",11:"黃凡恩",12:"葉富裕",13:"鄭滈",14:"謝丞祐",15:"謝廣浩",16:"鍾昊廷",17:"宋佩欣",18:"李芯葵",19:"張妤榛",20:"陳美月",21:"楊婕琳",22:"鄭文涵",23:"轉出",24:"戴苡安",25:"謝孟芩",26:"鍾沂璇",27:"顏芯彤",28:"羅宇岑"},
+  "905":{1:"王廷睿",2:"王宥承",3:"呂彥廷",4:"汪奕宏(病)",5:"林承諺",6:"柯承宏",7:"郭家睿",8:"陳政嘉",9:"曾柏軒",10:"黃冠儒",11:"黃星硯",12:"轉出",13:"溫家寶",14:"蔡丞恩",15:"蔣秉綸",16:"鄭宇鈞",17:"鄭淯桓",18:"孔云靚",19:"王盈瑜",20:"轉出",21:"胡羽薰",22:"轉出",23:"曾嬿恩",24:"轉出",25:"劉芳萍",26:"蔡宜宸",27:"轉出",28:"鄧心霏",29:"侯允喬"},
+  "906":{1:"丁品睿",2:"王柏惟",3:"王瑋均",4:"朱騤閎",5:"吳一秀",6:"吳秉家",7:"呂沅恩",8:"李品彥",9:"邱楨皓",10:"紀品言",11:"張境全",12:"連駿",13:"曾至佑",14:"楊宸昊",15:"葉子毅",16:"簡俊彥",17:"江孟如",18:"吳予心",19:"吳婷萱",20:"李宜臻",21:"沈俞岑",22:"周葦蓁",23:"邱芷歆",24:"許晏綾",25:"陳禹臻",26:"黃淮晨",27:"楊忻綾"},
+  "907":{1:"吳哲凱",2:"吳哲翔",3:"吳峻賢",4:"呂宥玄",5:"林琮勛",6:"洪丞亮",7:"胡仁玠",8:"翁宇威",9:"陳志旭",10:"曾琮翔",11:"溫彥瑀",12:"劉宇翰",13:"劉芃邑",14:"潘克維",15:"簡宥丞",16:"羅天輿",17:"王湘婷",18:"吳郁善",19:"周芸萱",20:"孫楀童",21:"徐薇善",22:"張芯敔",23:"莊雨潔",24:"郭妘涵",25:"轉出",26:"蔡羽晴",27:"蔡芸庭",28:"蕭妤芸"},
+  "908":{1:"何承恩",2:"吳杰恩",3:"吳祐杰",4:"呂奇恩",5:"呂宣澔",6:"林子家",7:"林子勛",8:"姚秀宸",9:"夏廷碩",10:"莊祐豪",11:"陳禹安",12:"陶立恩",13:"曾律誠",14:"楊子肋",15:"葉貞均",16:"羅宥鈞",17:"羅凱嚴",18:"王妘菲",19:"何芯羽",20:"吳姵潔",21:"呂芷漩",22:"林俞辰",23:"陳嘉昀",24:"彭恩憫",25:"曾禹瑄",26:"趙品瑄",27:"鄭渝諼",28:"盧道姸"},
+  "909":{1:"丁弋",2:"方子郡",3:"王家喆",4:"江柏萱",5:"林彥杰",6:"林楷恆",7:"姜彥綸",8:"胡至棠",9:"張珉維",10:"張峻瑋",11:"陳鼎文",12:"陳賢澔",13:"温品洋",14:"楊宥棠",15:"劉家佑",16:"戴志豪",17:"鍾至崴",18:"宋銘芳",19:"李沄璇",20:"李苡瑄",21:"林彤恩",22:"林禹彤",23:"邱品喬",24:"陳羽楺",25:"彭茹溦",26:"曾芳翎",27:"楊絜瑀",28:"楊舒羽"},
+  "910":{1:"朱柏元",2:"朱駖獻",3:"吳奕澂",4:"吳晟昊",5:"宋茲易",6:"郭昱賢",7:"陳鍇毅",8:"彭于瑒",9:"曾陳德嵩",10:"黃兆隆",11:"黃邦齊",12:"黃宥晟",13:"楊哲典",14:"潘承銳",15:"鄧裕哲",16:"羅思杰",17:"吳宜庭",18:"吳羿嫻",19:"吳湘妘",20:"轉出",21:"轉出",22:"林彤恩",23:"張芯睿",24:"轉出",25:"黃韋綸",26:"鄭家霓",27:"轉出"},
+  "911":{1:"李恪明",2:"轉出",3:"林奕辰",4:"洪睿辰",5:"相良蒔(保)",6:"胡定恆",7:"許玄侑",8:"陳柏劭",9:"彭澤希",10:"曾彥承",11:"曾祥家",12:"黃子峻",13:"黃閔聖",14:"楊元富",15:"楊凱翔",16:"劉愷揚",17:"余旖茜",18:"孫品菲",19:"張簡育琳",20:"梁雅萱",21:"陳君宜",22:"陳妍希",23:"陳侑煊",24:"彭湘珺",25:"鄭佳函",26:"鄭詩晴",27:"謝盈婕",28:"蘇嘉玲"},
+  "912":{1:"江文賢",2:"吳宥霆",3:"吳致穎",4:"李佳樺",5:"洪浩瑋",6:"唐楚鈞",7:"轉出",8:"張立",9:"張鈞澔",10:"梁正承",11:"陳伽鈞",12:"陳品杰",13:"陳祈寧",14:"陳峻頎",15:"楊岷勲",16:"楊赫",17:"蔡廉濠",18:"王億珊",19:"吳晏甄",20:"林鈺蕓",21:"范芷綾",22:"徐羽萱",23:"張羽廷",24:"郭育彤",25:"轉出",26:"楊宜家",27:"廖禹晴",28:"戴羽岑",29:"呂幸娟"},
 };
 
-const GRADE_CLASSES = {
-  7: ['701','702','703','704','705','706','707','708','709','710','711','712'],
-  8: ['801','802','803','804','805','806','807','808','809','810','811','812'],
-  9: ['901','902','903','904','905','906','907','908','909','910','911','912'],
-};
-
+const GRADE_CLASSES = {7:['701','702','703','704','705','706','707','708','709','710','711','712'],8:['801','802','803','804','805','806','807','808','809','810','811','812'],9:['901','902','903','904','905','906','907','908','909','910','911','912']};
 const TIME_OPTIONS = ['早修','第一節','第二節','第三節','第四節','第五節','第六節','第七節','午休','放學後'];
 const REASONS = ['禮貌不周者','上課不專心聽講','違反生活常規者','違反學習規範者'];
 
-// ===================== CONFIG =====================
-// 請將下方的 SCRIPT_URL 替換為您的 Google Apps Script 部署網址
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNgTFcf2y7Vd2bnptUA99-GEwvxY8arl22WYzEmDuWc1HSOjVh2g-R4XwYCQ0E3MCT/exec';
+// ★ 請將下方替換為您的 Apps Script 部署網址 ★
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNgTFcf2y7Vd2bnptUA99-GEwvxY8arl22WYzEmDuWc1HSOjVh2g-R4XwYCQ0E3MCT/execE';
 
-// ===================== STATE =====================
-let cardCounts = {7:1, 8:1, 9:1};
-
-// ===================== LOGIN =====================
+// ===================== 登入 =====================
 function checkLogin() {
-  const pw = document.getElementById('pwInput').value;
-  if (pw === '0000') {
+  if (document.getElementById('pwInput').value === '0000') {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     initApp();
@@ -696,419 +244,274 @@ function checkLogin() {
     document.getElementById('pwInput').focus();
   }
 }
+document.getElementById('pwInput').addEventListener('keydown', e => { if (e.key==='Enter') checkLogin(); });
 
-document.getElementById('pwInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') checkLogin();
-});
-
-// ===================== INIT =====================
 function initApp() {
-  // Set date
   const now = new Date();
-  const dateStr = `${now.getFullYear()} 年 ${now.getMonth()+1} 月 ${now.getDate()} 日`;
-  document.getElementById('headerDate').textContent = dateStr;
-
-  // Init first card for each grade
-  [7,8,9].forEach(g => {
-    addCard(g);
-  });
+  document.getElementById('headerDate').textContent = `${now.getFullYear()} 年 ${now.getMonth()+1} 月 ${now.getDate()} 日`;
+  [7,8,9].forEach(g => addCard(g));
 }
 
 function switchGrade(g) {
-  document.querySelectorAll('.grade-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.grade-tab').forEach(t=>t.classList.remove('active'));
   document.querySelector(`.grade-tab[data-grade="${g}"]`).classList.add('active');
-  document.querySelectorAll('.grade-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.grade-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById(`panel${g}`).classList.add('active');
 }
 
-// ===================== CARD MANAGEMENT =====================
+// ===================== 表單卡片 =====================
 function addCard(grade) {
   const container = document.getElementById(`cards${grade}`);
+  if (container.querySelectorAll('.form-card').length >= 5) return;
   const count = container.querySelectorAll('.form-card').length;
-  if (count >= 5) return;
-
   const cardId = `g${grade}_c${Date.now()}`;
-  const classes = GRADE_CLASSES[grade];
-
   const card = document.createElement('div');
-  card.className = 'form-card';
-  card.id = cardId;
-
-  const now = new Date();
-  const dateVal = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-
+  card.className = 'form-card'; card.id = cardId;
   card.innerHTML = `
     <div class="card-header">
       <span class="card-num">第 ${count+1} 筆</span>
-      ${count > 0 ? `<button class="remove-btn" onclick="removeCard('${cardId}', ${grade})">移除</button>` : '<span></span>'}
+      ${count>0?`<button class="remove-btn" onclick="removeCard('${cardId}',${grade})">移除</button>`:'<span></span>'}
     </div>
     <div class="card-body">
       <div class="section-divider">學生資料</div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label required">班級</label>
-          <select onchange="updateSeatOptions(this, '${cardId}')" id="${cardId}_class">
+        <div class="form-group"><label class="form-label required">班級</label>
+          <select id="${cardId}_class" onchange="updateSeatOptions(this,'${cardId}')">
             <option value="">請選擇</option>
-            ${classes.map(c => `<option value="${c}">${c}</option>`).join('')}
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label required">座號</label>
-          <select id="${cardId}_seat" onchange="updateName('${cardId}')">
-            <option value="">請先選班級</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">姓名（自動帶入）</label>
-          <div class="name-display" id="${cardId}_name">—</div>
-        </div>
-        <div class="form-group">
-          <label class="form-label required">時間</label>
-          <select id="${cardId}_time">
-            <option value="">請選擇</option>
-            ${TIME_OPTIONS.map(t => `<option value="${t}">${t}</option>`).join('')}
-          </select>
-        </div>
+            ${GRADE_CLASSES[grade].map(c=>`<option value="${c}">${c}</option>`).join('')}
+          </select></div>
+        <div class="form-group"><label class="form-label required">座號</label>
+          <select id="${cardId}_seat" onchange="updateName('${cardId}')"><option value="">請先選班級</option></select></div>
+        <div class="form-group"><label class="form-label">姓名（自動帶入）</label>
+          <div class="name-display" id="${cardId}_name">—</div></div>
+        <div class="form-group"><label class="form-label required">時間</label>
+          <select id="${cardId}_time"><option value="">請選擇</option>${TIME_OPTIONS.map(t=>`<option value="${t}">${t}</option>`).join('')}</select></div>
       </div>
-
       <div class="section-divider">勸導事由（單選，必填）</div>
       <div class="reasons-group" id="${cardId}_reasons">
-        ${REASONS.map((r,i) => `
-          <label class="reason-option" id="${cardId}_rl${i}">
-            <input type="radio" name="${cardId}_reason" value="${r}" onchange="highlightReason('${cardId}')">
-            <span>${r}</span>
-          </label>
-        `).join('')}
+        ${REASONS.map((r,i)=>`<label class="reason-option" id="${cardId}_rl${i}"><input type="radio" name="${cardId}_reason" value="${r}" onchange="highlightReason('${cardId}')"><span>${r}</span></label>`).join('')}
       </div>
-
-      <div style="margin-top:16px;">
-        <div class="section-divider">具體事實（選填）</div>
-        <div class="form-group">
-          <textarea id="${cardId}_note" placeholder="請描述具體違規事實⋯（選填）"></textarea>
-        </div>
-      </div>
-
-      <div style="margin-top:16px;">
-        <div class="section-divider">開單教師</div>
-        <div class="form-row-2">
-          <div class="form-group">
-            <label class="form-label required">開單教師姓名</label>
-            <input type="text" id="${cardId}_teacher" placeholder="請輸入姓名">
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-
+      <div style="margin-top:16px;"><div class="section-divider">具體事實（選填）</div>
+        <textarea id="${cardId}_note" placeholder="請描述具體違規事實⋯（選填）"></textarea></div>
+      <div style="margin-top:16px;"><div class="section-divider">開單教師</div>
+        <div class="form-row-2"><div class="form-group"><label class="form-label required">開單教師姓名</label>
+          <input type="text" id="${cardId}_teacher" placeholder="請輸入姓名"></div></div></div>
+    </div>`;
   container.appendChild(card);
-  updateAddBtn(grade);
-  renumberCards(grade);
+  updateAddBtn(grade); renumberCards(grade);
 }
 
-function removeCard(cardId, grade) {
-  document.getElementById(cardId).remove();
-  updateAddBtn(grade);
-  renumberCards(grade);
-}
+function removeCard(id, grade) { document.getElementById(id).remove(); updateAddBtn(grade); renumberCards(grade); }
+function updateAddBtn(grade) { document.getElementById(`addBtn${grade}`).disabled = document.getElementById(`cards${grade}`).querySelectorAll('.form-card').length >= 5; }
+function renumberCards(grade) { document.getElementById(`cards${grade}`).querySelectorAll('.form-card').forEach((c,i)=>c.querySelector('.card-num').textContent=`第 ${i+1} 筆`); }
 
-function updateAddBtn(grade) {
-  const container = document.getElementById(`cards${grade}`);
-  const count = container.querySelectorAll('.form-card').length;
-  const btn = document.getElementById(`addBtn${grade}`);
-  btn.disabled = count >= 5;
-}
-
-function renumberCards(grade) {
-  const cards = document.getElementById(`cards${grade}`).querySelectorAll('.form-card');
-  cards.forEach((card, i) => {
-    card.querySelector('.card-num').textContent = `第 ${i+1} 筆`;
-  });
-}
-
-// ===================== DROPDOWNS =====================
-function updateSeatOptions(classSelect, cardId) {
-  const cls = classSelect.value;
+function updateSeatOptions(sel, cardId) {
+  const cls = sel.value;
   const seatSel = document.getElementById(`${cardId}_seat`);
   seatSel.innerHTML = '<option value="">請選擇</option>';
   document.getElementById(`${cardId}_name`).textContent = '—';
-
   if (!cls || !STUDENTS[cls]) return;
-
-  const nums = Object.keys(STUDENTS[cls]).map(Number).sort((a,b)=>a-b);
-  nums.forEach(n => {
-    const opt = document.createElement('option');
-    opt.value = n;
-    opt.textContent = `${n} 號`;
-    seatSel.appendChild(opt);
+  Object.keys(STUDENTS[cls]).map(Number).sort((a,b)=>a-b).forEach(n=>{
+    const o = document.createElement('option'); o.value=n; o.textContent=`${n} 號`; seatSel.appendChild(o);
   });
 }
 
 function updateName(cardId) {
   const cls = document.getElementById(`${cardId}_class`).value;
   const seat = document.getElementById(`${cardId}_seat`).value;
-  const nameEl = document.getElementById(`${cardId}_name`);
-  if (cls && seat && STUDENTS[cls] && STUDENTS[cls][seat]) {
-    nameEl.textContent = STUDENTS[cls][seat];
-  } else {
-    nameEl.textContent = '—';
-  }
+  document.getElementById(`${cardId}_name`).textContent = (cls&&seat&&STUDENTS[cls]&&STUDENTS[cls][seat]) ? STUDENTS[cls][seat] : '—';
 }
 
 function highlightReason(cardId) {
-  document.querySelectorAll(`#${cardId}_reasons .reason-option`).forEach(el => {
-    el.classList.toggle('selected', el.querySelector('input').checked);
-  });
+  document.querySelectorAll(`#${cardId}_reasons .reason-option`).forEach(el=>el.classList.toggle('selected',el.querySelector('input').checked));
 }
 
-// ===================== VALIDATION =====================
+// ===================== 驗證 =====================
 function validateGrade(grade) {
   const cards = document.getElementById(`cards${grade}`).querySelectorAll('.form-card');
-  const data = [];
-  let valid = true;
-  let firstError = null;
-
-  cards.forEach((card, i) => {
+  const data = []; let firstError = null;
+  cards.forEach((card,i)=>{
     const id = card.id;
-    const cls = document.getElementById(`${id}_class`).value;
-    const seat = document.getElementById(`${id}_seat`).value;
-    const time = document.getElementById(`${id}_time`).value;
-    const teacher = document.getElementById(`${id}_teacher`).value.trim();
-    const reasonEl = card.querySelector(`input[name="${id}_reason"]:checked`);
-    const reason = reasonEl ? reasonEl.value : '';
-    const note = document.getElementById(`${id}_note`).value.trim();
-    const name = document.getElementById(`${id}_name`).textContent;
-
-    // Validate
-    let err = [];
-    if (!cls) err.push('班級');
-    if (!seat) err.push('座號');
-    if (!time) err.push('時間');
-    if (!reason) err.push('勸導事由');
-    if (!teacher) err.push('開單教師姓名');
-
-    if (err.length > 0) {
-      valid = false;
-      if (!firstError) firstError = `第 ${i+1} 筆缺少：${err.join('、')}`;
-    } else {
-      const now = new Date();
-      data.push({
-        grade,
-        cls,
-        seat,
-        name,
-        date: `${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}`,
-        time,
-        reason,
-        note,
-        teacher,
-        timestamp: now.toISOString(),
-      });
+    const cls=document.getElementById(`${id}_class`).value, seat=document.getElementById(`${id}_seat`).value;
+    const time=document.getElementById(`${id}_time`).value, teacher=document.getElementById(`${id}_teacher`).value.trim();
+    const reasonEl=card.querySelector(`input[name="${id}_reason"]:checked`), reason=reasonEl?reasonEl.value:'';
+    const note=document.getElementById(`${id}_note`).value.trim(), name=document.getElementById(`${id}_name`).textContent;
+    const err=[];
+    if(!cls)err.push('班級'); if(!seat)err.push('座號'); if(!time)err.push('時間');
+    if(!reason)err.push('勸導事由'); if(!teacher)err.push('開單教師姓名');
+    if(err.length>0){if(!firstError)firstError=`第 ${i+1} 筆缺少：${err.join('、')}`;}
+    else{
+      const now=new Date();
+      data.push({grade,cls,seat,name,time,reason,note,teacher,
+        date:`${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}`,
+        timestamp:now.toISOString()});
     }
   });
-
-  return { valid, data, firstError };
+  return {valid:!firstError,data,firstError};
 }
 
-// ===================== SUBMIT =====================
+// ===================== JSONP 上傳（可取得真實回應） =====================
+function uploadViaJSONP(data) {
+  return new Promise((resolve, reject) => {
+    if (!SCRIPT_URL || SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+      resolve({success: true, skipped: true});
+      return;
+    }
+
+    const cbName = 'cb_' + Date.now();
+    const timer = setTimeout(() => {
+      delete window[cbName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+      reject(new Error('timeout'));
+    }, 15000); // 15秒 timeout
+
+    window[cbName] = function(response) {
+      clearTimeout(timer);
+      delete window[cbName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+      resolve(response);
+    };
+
+    const payload = encodeURIComponent(JSON.stringify({records: data}));
+    const script = document.createElement('script');
+    script.src = `${SCRIPT_URL}?callback=${cbName}&data=${payload}`;
+    script.onerror = () => {
+      clearTimeout(timer);
+      delete window[cbName];
+      reject(new Error('script error'));
+    };
+    document.head.appendChild(script);
+  });
+}
+
+// ===================== 送出 =====================
 async function submitGrade(grade) {
-  const { valid, data, firstError } = validateGrade(grade);
-  if (!valid) {
-    alert(`⚠️ ${firstError}\n\n請完整填寫所有必填欄位後再送出。`);
+  const {valid, data, firstError} = validateGrade(grade);
+  if (!valid) { alert(`⚠️ ${firstError}\n\n請完整填寫所有必填欄位後再送出。`); return; }
+
+  showOverlay(true, '資料上傳中，請稍候⋯');
+
+  try {
+    const result = await uploadViaJSONP(data);
+
+    if (result.skipped) {
+      // 尚未設定 SCRIPT_URL，跳過上傳
+      showOverlay(true, '正在產生勸導單⋯');
+      await new Promise(r=>setTimeout(r,200));
+      showOverlay(false);
+      printSlips(data);
+      showToast('success', '✓ 勸導單已產生，請記得列印並送至導辦及學務處蓋章');
+    } else if (result.success) {
+      // 上傳成功
+      showOverlay(true, '正在產生勸導單⋯');
+      await new Promise(r=>setTimeout(r,200));
+      showOverlay(false);
+      printSlips(data);
+      showToast('success', '✓ 已成功登錄勸導，請記得列印勸導單以利核章流程');
+    } else {
+      // Apps Script 回傳失敗
+      showOverlay(false);
+      showToast('error', '✗ 資料登錄失敗，請截圖並通知管理員。勸導單仍將開啟，請手動補登。');
+      printSlips(data);
+      return;
+    }
+  } catch(e) {
+    // 網路錯誤或 timeout
+    showOverlay(false);
+    showToast('error', '✗ 網路異常，資料可能未登錄。請通知管理員確認。勸導單仍將開啟列印。');
+    printSlips(data);
     return;
   }
 
-  showOverlay(true);
-
-  try {
-    // Upload to Google Sheets
-    if (SCRIPT_URL && SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
-      const resp = await fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({ records: data }),
-      });
-      if (!resp.ok) throw new Error('上傳失敗');
-    }
-
-    // Generate PDF
-    generatePDF(data);
-
-    showOverlay(false);
-    showToast('✓ 已成功登錄勸導，請記得列印勸導單以利核章流程');
-
-    // Reset cards
-    resetGrade(grade);
-
-  } catch(err) {
-    showOverlay(false);
-    // Still generate PDF even if upload fails
-    generatePDF(data);
-    showToast('⚠️ 資料上傳異常，但 PDF 已下載，請通知管理員');
-  }
+  resetGrade(grade);
 }
 
-function resetGrade(grade) {
-  const container = document.getElementById(`cards${grade}`);
-  container.innerHTML = '';
-  addCard(grade);
-}
+function resetGrade(grade) { document.getElementById(`cards${grade}`).innerHTML=''; addCard(grade); }
 
-// ===================== PDF GENERATION =====================
-function generatePDF(records) {
-  const { jsPDF } = window.jspdf;
+// ===================== 列印勸導單 =====================
+function printSlips(records) {
+  const win = window.open('','_blank','width=900,height=700');
+  if (!win) { alert('請允許彈出視窗以顯示勸導單\n（請在瀏覽器網址列右側允許彈出視窗）'); return; }
+
+  const copies = [
+    {label:'（第一聯）開單後交生教組留存',hasParent:false},
+    {label:'（第二聯）家長簽章後，由導師留存',hasParent:true},
+    {label:'（第三聯）核章後黏貼於聯絡簿',hasParent:false},
+  ];
+
+  let html = `<!DOCTYPE html><html lang="zh-TW"><head><meta charset="UTF-8"><title>勸導單</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Serif TC','Noto Sans TC',serif;font-size:11pt;color:#000;background:#fff;}
+@page{size:A4;margin:8mm 10mm;}
+.rec{page-break-after:always;}
+.rec:last-child{page-break-after:auto;}
+.copy{border:1px solid #999;padding:5mm 7mm 4mm;margin-bottom:2mm;position:relative;min-height:86mm;}
+.copy+.copy{border-top:2px dashed #555;}
+.title{font-size:13pt;font-weight:bold;text-align:center;margin-bottom:5mm;letter-spacing:1px;}
+.row{display:flex;align-items:baseline;margin-bottom:4mm;flex-wrap:wrap;gap:2px;line-height:2;}
+.uf{border-bottom:1px solid #222;display:inline-block;padding:0 3px;font-weight:bold;}
+.sm{min-width:20px;}.md{min-width:36px;}.lg{min-width:72px;}.xl{min-width:110px;}
+.reasons{display:flex;gap:6mm;flex-wrap:wrap;align-items:center;margin-bottom:4mm;}
+.rsn{display:inline;}
+.rsn.sel{font-weight:bold;}.rsn.sel::before{content:'【';}.rsn.sel::after{content:'】';}
+.note-row{display:flex;align-items:baseline;margin-bottom:4mm;}
+.note-line{flex:1;border-bottom:1px solid #222;min-height:1.4em;padding:0 4px;word-break:break-all;margin-left:4px;}
+.fixed{font-size:10pt;margin-bottom:2mm;}
+.sigs{display:flex;border-top:1px solid #ccc;padding-top:3mm;margin-top:2mm;}
+.sig{flex:1;text-align:center;border-right:1px solid #ccc;padding:1mm 2mm;font-size:10pt;}
+.sig:last-child{border-right:none;}
+.sig-val{font-size:11pt;font-weight:bold;min-height:9mm;display:flex;align-items:center;justify-content:center;}
+.sig-blank{min-height:9mm;}
+.lbl{position:absolute;right:1.5mm;top:8mm;font-size:8pt;color:#666;writing-mode:vertical-rl;text-orientation:mixed;letter-spacing:0.5px;}
+.par{display:flex;align-items:baseline;margin-bottom:3mm;}
+.par-line{flex:1;border-bottom:1px solid #222;min-height:1.2em;margin-left:4px;}
+</style></head><body>`;
 
   records.forEach(rec => {
-    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-
-    // A4 = 210 x 297mm
-    // 3 copies per page, each ~90mm tall
-    const copies = [
-      { y: 10,  label: '（第一聯）開單後交生教組留存', hasParent: false },
-      { y: 105, label: '（第二聯）家長簽章後，由導師留存', hasParent: true },
-      { y: 200, label: '（第三聯）核章後黏貼於聯絡簿', hasParent: false },
-    ];
-
-    // Load font (use built-in for CJK)
-    copies.forEach((copy, ci) => {
-      drawCopy(doc, rec, copy.y, copy.label, copy.hasParent, ci < 2);
+    const g=rec.cls.charAt(0), c=rec.cls.slice(1), dp=rec.date.split('/');
+    html += `<div class="rec">`;
+    copies.forEach(copy => {
+      html += `<div class="copy">
+  <div class="lbl">${copy.label}</div>
+  <div class="title">新竹市立竹光國民中學學生事件勸導單</div>
+  <div class="row">查&nbsp;<span class="uf sm">${g}</span>&nbsp;年&nbsp;<span class="uf sm">${c}</span>&nbsp;班&nbsp;<span class="uf sm">${rec.seat}</span>&nbsp;號&nbsp;&nbsp;學生：<span class="uf xl">${rec.name}</span></div>
+  <div class="row">於&nbsp;<span class="uf md">${dp[0]}</span>&nbsp;年&nbsp;<span class="uf sm">${dp[1]}</span>&nbsp;月&nbsp;<span class="uf sm">${dp[2]}</span>&nbsp;日&nbsp;&nbsp;時間：<span class="uf lg">${rec.time}</span></div>
+  <div class="row">因&nbsp;&nbsp;<span class="reasons">${['禮貌不周者','上課不專心聽講','違反生活常規者','違反學習規範者'].map(r=>`<span class="rsn${rec.reason===r?' sel':''}">${r}</span>`).join('')}</span></div>
+  <div class="note-row">備註：<span class="note-line">${rec.note||''}</span></div>
+  <div class="fixed">故開立此單，以示警惕。</div>
+  <div class="fixed">若單一學期收領此單五張（同一項目），則依校規記警告一支。</div>
+  ${copy.hasParent?`<div class="par">家長簽章：<span class="par-line"></span></div>`:''}
+  <div class="sigs">
+    <div class="sig">開單老師<div class="sig-val">${rec.teacher}</div></div>
+    <div class="sig">導師簽章<div class="sig-blank"></div></div>
+    <div class="sig">學務處<div class="sig-blank"></div></div>
+  </div>
+</div>`;
     });
-
-    const filename = `勸導單_${rec.cls}_${rec.seat}號_${rec.name}_${rec.date.replace(/\//g,'-')}.pdf`;
-    doc.save(filename);
-  });
-}
-
-function drawCopy(doc, rec, startY, label, hasParent, drawLine) {
-  const lm = 15; // left margin
-  const pw = 180; // content width
-
-  doc.setFont('helvetica');
-
-  // Title
-  doc.setFontSize(13);
-  doc.setFont('helvetica', 'bold');
-  const title = '新竹市立竹光國民中學學生事件勸導單';
-  doc.text(title, 105, startY + 8, { align: 'center' });
-
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
-
-  // Row 1: 查...年...班...號 學生:...
-  let y = startY + 16;
-  const gradeNum = rec.cls.charAt(0);
-  const clsNum = rec.cls.slice(1);
-
-  doc.text(`查`, lm, y);
-  doc.text(`${gradeNum}`, lm+10, y); underline(doc, lm+8, y, 12);
-  doc.text(`年`, lm+22, y);
-  doc.text(`${clsNum}`, lm+32, y); underline(doc, lm+30, y, 12);
-  doc.text(`班`, lm+44, y);
-  doc.text(`${rec.seat}`, lm+54, y); underline(doc, lm+52, y, 12);
-  doc.text(`號`, lm+66, y);
-  doc.text(`學生：`, lm+78, y);
-  doc.text(`${rec.name}`, lm+98, y); underline(doc, lm+96, y, 50);
-
-  // Row 2: 於...年...月...日 時間:...
-  y += 10;
-  const dateParts = rec.date.split('/');
-  doc.text(`於`, lm, y);
-  doc.text(`${dateParts[0]}`, lm+10, y); underline(doc, lm+8, y, 16);
-  doc.text(`年`, lm+26, y);
-  doc.text(`${dateParts[1]}`, lm+36, y); underline(doc, lm+34, y, 10);
-  doc.text(`月`, lm+48, y);
-  doc.text(`${dateParts[2]}`, lm+58, y); underline(doc, lm+56, y, 10);
-  doc.text(`日`, lm+70, y);
-  doc.text(`時間：`, lm+80, y);
-  doc.text(`${rec.time}`, lm+100, y); underline(doc, lm+98, y, 50);
-
-  // Row 3: 因 [reasons]
-  y += 10;
-  doc.text(`因`, lm, y);
-
-  const reasons = ['禮貌不周', '上課不專心聽講', '違反生活常規', '違反學習規範'];
-  const reasonKeys = ['禮貌不周者', '上課不專心聽講', '違反生活常規者', '違反學習規範者'];
-  let rx = lm + 10;
-  reasons.forEach((r, i) => {
-    const isSelected = rec.reason === reasonKeys[i];
-    if (isSelected) {
-      doc.setFont('helvetica', 'bold');
-      // Draw box around selected
-      const tw = doc.getTextWidth(r);
-      doc.rect(rx - 1, y - 4.5, tw + 2, 6.5);
-    } else {
-      doc.setFont('helvetica', 'normal');
-    }
-    doc.text(r, rx, y);
-    rx += doc.getTextWidth(r) + 8;
-    doc.setFont('helvetica', 'normal');
+    html += `</div>`;
   });
 
-  // Row 4: 備註
-  y += 10;
-  doc.text(`備註：`, lm, y);
-  const noteText = rec.note || '';
-  doc.text(noteText.substring(0, 50), lm + 14, y);
-  underline(doc, lm + 12, y, pw - 12);
-
-  // Fixed text
-  y += 10;
-  doc.text(`故開立此單，以示警惕。`, lm, y);
-  y += 7;
-  doc.text(`若單一學期收領此單五張（同一項目），則依校規記警告一支。`, lm, y);
-
-  // Signature row
-  y += 10;
-  doc.text(`開單老師：`, lm, y);
-  doc.text(`${rec.teacher}`, lm + 22, y);
-  underline(doc, lm + 20, y, 38);
-
-  doc.text(`導師簽章：`, lm + 64, y);
-  underline(doc, lm + 82, y, 38);
-
-  doc.text(`學務處：`, lm + 126, y);
-  underline(doc, lm + 140, y, 35);
-
-  // Parent signature (2nd copy only)
-  if (hasParent) {
-    y += 8;
-    doc.text(`家長簽章：`, lm, y);
-    underline(doc, lm + 22, y, 60);
-  }
-
-  // Copy label (vertical text simulation - rotated)
-  // Draw as horizontal at right side
-  doc.setFontSize(8);
-  doc.setTextColor(100);
-  doc.text(label, 205, startY + 45, { angle: 270, align: 'center' });
-  doc.setTextColor(0);
-  doc.setFontSize(10);
-
-  // Divider line
-  if (drawLine) {
-    y = startY + 88;
-    doc.setDrawColor(180);
-    doc.setLineDash([2,2]);
-    doc.line(lm, y, lm + pw, y);
-    doc.setLineDash([]);
-    doc.setDrawColor(0);
-  }
+  html += `<script>window.onload=function(){setTimeout(function(){window.print();},600);};<\/script></body></html>`;
+  win.document.write(html);
+  win.document.close();
 }
 
-function underline(doc, x, y, w) {
-  doc.setDrawColor(150);
-  doc.line(x, y + 1, x + w, y + 1);
-  doc.setDrawColor(0);
-}
-
-// ===================== UI HELPERS =====================
-function showOverlay(show) {
+// ===================== UI 工具 =====================
+function showOverlay(show, text) {
   document.getElementById('overlay').classList.toggle('show', show);
+  if (text) document.getElementById('overlayText').textContent = text;
 }
 
-function showToast(msg) {
-  const toast = document.getElementById('toast');
-  toast.textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 5000);
+let toastTimer = null;
+function showToast(type, msg) {
+  const t = document.getElementById('toast');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  t.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), type==='error' ? 8000 : 5000);
 }
 </script>
 </body>
