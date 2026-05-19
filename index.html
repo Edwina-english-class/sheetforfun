@@ -230,7 +230,7 @@ const TIME_OPTIONS = ['早修','第一節','第二節','第三節','第四節','
 const REASONS = ['禮貌不周者','上課不專心聽講','違反生活常規者','違反學習規範者'];
 
 // ★ 請將下方替換為您的 Apps Script 部署網址 ★
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNgTFcf2y7Vd2bnptUA99-GEwvxY8arl22WYzEmDuWc1HSOjVh2g-R4XwYCQ0E3MCT/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNgTFcf2y7Vd2bnptUA99-GEwvxY8arl22WYzEmDuWc1HSOjVh2g-R4XwYCQ0E3MCT/execE';
 
 // ===================== 登入 =====================
 function checkLogin() {
@@ -454,29 +454,32 @@ function printSlips(records) {
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Noto Serif TC','Noto Sans TC',serif;font-size:11pt;color:#000;background:#fff;}
-@page{size:A4;margin:8mm 10mm;}
-.rec{page-break-after:always;}
-.rec:last-child{page-break-after:auto;}
-.copy{border:1px solid #999;padding:5mm 7mm 4mm;margin-bottom:2mm;position:relative;min-height:86mm;}
+body{font-family:'Noto Serif TC','Noto Sans TC',serif;font-size:10pt;color:#000;background:#fff;}
+@page{size:A4;margin:6mm 8mm;}
+.rec{height:285mm;page-break-after:always;break-after:page;overflow:hidden;}
+.rec:last-child{page-break-after:auto;break-after:auto;}
+.copy{border:1px solid #999;padding:4mm 6mm 3mm;margin-bottom:2mm;position:relative;height:91mm;overflow:hidden;}
+.copy:last-child{margin-bottom:0;}
 .copy+.copy{border-top:2px dashed #555;}
-.title{font-size:13pt;font-weight:bold;text-align:center;margin-bottom:5mm;letter-spacing:1px;}
-.row{display:flex;align-items:baseline;margin-bottom:4mm;flex-wrap:wrap;gap:2px;line-height:2;}
+.title{font-size:12pt;font-weight:bold;text-align:center;margin-bottom:3mm;letter-spacing:1px;}
+.row{display:flex;align-items:baseline;margin-bottom:2.6mm;flex-wrap:wrap;gap:1px;line-height:1.65;}
 .uf{border-bottom:1px solid #222;display:inline-block;padding:0 3px;font-weight:bold;}
-.sm{min-width:20px;}.md{min-width:36px;}.lg{min-width:72px;}.xl{min-width:110px;}
-.reasons{display:flex;gap:5mm;flex-wrap:wrap;align-items:center;margin-bottom:4mm;}
-.rsn{display:inline-flex;align-items:center;gap:1.5mm;white-space:nowrap;}
-.box{width:4.2mm;height:4.2mm;border:1.2px solid #111;display:inline-flex;align-items:center;justify-content:center;font-size:10pt;font-weight:bold;line-height:1;}
-.note-row{display:flex;align-items:flex-start;margin-bottom:4mm;line-height:1.8;}
-.note-text{flex:1;min-height:1.4em;padding:0 4px;word-break:break-all;}
-.fixed{font-size:10pt;margin-bottom:2mm;}
-.sigs{display:flex;border-top:1px solid #ccc;padding-top:3mm;margin-top:2mm;}
-.sig{flex:1;text-align:center;border-right:1px solid #ccc;padding:1mm 2mm;font-size:10pt;}
+.sm{min-width:18px;}.md{min-width:32px;}.lg{min-width:60px;}.xl{min-width:96px;}
+.reasons{display:flex;gap:3.5mm;flex-wrap:wrap;align-items:center;margin-bottom:2mm;}
+.rsn{display:inline-flex;align-items:center;gap:1.2mm;white-space:nowrap;}
+.box{width:4mm;height:4mm;border:1.1px solid #111;display:inline-flex;align-items:center;justify-content:center;font-size:9pt;font-weight:bold;line-height:1;}
+.note-row{display:flex;align-items:flex-start;margin-bottom:2mm;line-height:1.45;}
+.note-text{flex:1;min-height:1.2em;padding:0 3px;word-break:break-all;}
+.fixed{font-size:9.5pt;margin-bottom:1.3mm;line-height:1.35;}
+.sigs{display:flex;border-top:1px solid #ccc;padding-top:2mm;margin-top:1.5mm;}
+.sig{flex:1;text-align:center;border-right:1px solid #ccc;padding:0.8mm 2mm;font-size:9.5pt;}
 .sig:last-child{border-right:none;}
-.sig-val{font-size:11pt;font-weight:bold;min-height:9mm;display:flex;align-items:center;justify-content:center;}
-.sig-blank{min-height:9mm;}
-.parent-under{border-top:1px solid #ccc;margin-top:1.5mm;padding-top:1.5mm;min-height:10mm;display:flex;align-items:flex-start;justify-content:center;font-size:10pt;}
-.lbl{position:absolute;right:1.5mm;top:8mm;font-size:8pt;color:#666;writing-mode:vertical-rl;text-orientation:mixed;letter-spacing:0.5px;}
+.sig-val{font-size:10.5pt;font-weight:bold;min-height:7.5mm;display:flex;align-items:center;justify-content:center;}
+.sig-blank{min-height:7.5mm;}
+.parent-under{border-top:1px solid #ccc;margin-top:1mm;padding-top:1mm;min-height:8mm;display:flex;align-items:flex-start;justify-content:center;font-size:9.5pt;}
+.lbl{position:absolute;right:1.2mm;top:6mm;font-size:7.5pt;color:#666;writing-mode:vertical-rl;text-orientation:mixed;letter-spacing:0.5px;}
+.cut-line{height:0;border-top:1px dashed #777;margin:0 0 2mm;}
+@media print{html,body{width:210mm;height:297mm;} .rec{page-break-inside:avoid;} }
 </style></head><body>`;
 
   records.forEach(rec => {
