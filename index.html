@@ -230,7 +230,7 @@ const TIME_OPTIONS = ['早修','第一節','第二節','第三節','第四節','
 const REASONS = ['禮貌不周者','上課不專心聽講','違反生活常規者','違反學習規範者'];
 
 // ★ 請將下方替換為您的 Apps Script 部署網址 ★
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNgTFcf2y7Vd2bnptUA99-GEwvxY8arl22WYzEmDuWc1HSOjVh2g-R4XwYCQ0E3MCT/execE';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNgTFcf2y7Vd2bnptUA99-GEwvxY8arl22WYzEmDuWc1HSOjVh2g-R4XwYCQ0E3MCT/exec';
 
 // ===================== 登入 =====================
 function checkLogin() {
@@ -429,6 +429,16 @@ async function submitGrade(grade) {
 function resetGrade(grade) { document.getElementById(`cards${grade}`).innerHTML=''; addCard(grade); }
 
 // ===================== 列印勸導單 =====================
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// ===================== 列印勸導單 =====================
 function printSlips(records) {
   const win = window.open('','_blank','width=900,height=700');
   if (!win) { alert('請允許彈出視窗以顯示勸導單\n（請在瀏覽器網址列右側允許彈出視窗）'); return; }
@@ -438,6 +448,7 @@ function printSlips(records) {
     {label:'（第二聯）家長簽章後，由導師留存',hasParent:true},
     {label:'（第三聯）核章後黏貼於聯絡簿',hasParent:false},
   ];
+  const reasonList = ['禮貌不周者','上課不專心聽講','違反生活常規者','違反學習規範者'];
 
   let html = `<!DOCTYPE html><html lang="zh-TW"><head><meta charset="UTF-8"><title>勸導單</title>
 <style>
@@ -453,40 +464,42 @@ body{font-family:'Noto Serif TC','Noto Sans TC',serif;font-size:11pt;color:#000;
 .row{display:flex;align-items:baseline;margin-bottom:4mm;flex-wrap:wrap;gap:2px;line-height:2;}
 .uf{border-bottom:1px solid #222;display:inline-block;padding:0 3px;font-weight:bold;}
 .sm{min-width:20px;}.md{min-width:36px;}.lg{min-width:72px;}.xl{min-width:110px;}
-.reasons{display:flex;gap:6mm;flex-wrap:wrap;align-items:center;margin-bottom:4mm;}
-.rsn{display:inline;}
-.rsn.sel{font-weight:bold;}.rsn.sel::before{content:'【';}.rsn.sel::after{content:'】';}
-.note-row{display:flex;align-items:baseline;margin-bottom:4mm;}
-.note-line{flex:1;border-bottom:1px solid #222;min-height:1.4em;padding:0 4px;word-break:break-all;margin-left:4px;}
+.reasons{display:flex;gap:5mm;flex-wrap:wrap;align-items:center;margin-bottom:4mm;}
+.rsn{display:inline-flex;align-items:center;gap:1.5mm;white-space:nowrap;}
+.box{width:4.2mm;height:4.2mm;border:1.2px solid #111;display:inline-flex;align-items:center;justify-content:center;font-size:10pt;font-weight:bold;line-height:1;}
+.note-row{display:flex;align-items:flex-start;margin-bottom:4mm;line-height:1.8;}
+.note-text{flex:1;min-height:1.4em;padding:0 4px;word-break:break-all;}
 .fixed{font-size:10pt;margin-bottom:2mm;}
 .sigs{display:flex;border-top:1px solid #ccc;padding-top:3mm;margin-top:2mm;}
 .sig{flex:1;text-align:center;border-right:1px solid #ccc;padding:1mm 2mm;font-size:10pt;}
 .sig:last-child{border-right:none;}
 .sig-val{font-size:11pt;font-weight:bold;min-height:9mm;display:flex;align-items:center;justify-content:center;}
 .sig-blank{min-height:9mm;}
+.parent-under{border-top:1px solid #ccc;margin-top:1.5mm;padding-top:1.5mm;min-height:10mm;display:flex;align-items:flex-start;justify-content:center;font-size:10pt;}
 .lbl{position:absolute;right:1.5mm;top:8mm;font-size:8pt;color:#666;writing-mode:vertical-rl;text-orientation:mixed;letter-spacing:0.5px;}
-.par{display:flex;align-items:baseline;margin-bottom:3mm;}
-.par-line{flex:1;border-bottom:1px solid #222;min-height:1.2em;margin-left:4px;}
 </style></head><body>`;
 
   records.forEach(rec => {
-    const g=rec.cls.charAt(0), c=rec.cls.slice(1), dp=rec.date.split('/');
+    const g = escapeHtml(rec.cls).charAt(0);
+    const c = escapeHtml(rec.cls).slice(1);
+    const dp = String(rec.date || '').split('/').map(escapeHtml);
     html += `<div class="rec">`;
     copies.forEach(copy => {
+      const reasonHtml = reasonList.map(r => `
+        <span class="rsn"><span class="box">${rec.reason===r?'✓':''}</span>${escapeHtml(r)}</span>`).join('');
       html += `<div class="copy">
-  <div class="lbl">${copy.label}</div>
+  <div class="lbl">${escapeHtml(copy.label)}</div>
   <div class="title">新竹市立竹光國民中學學生事件勸導單</div>
-  <div class="row">查&nbsp;<span class="uf sm">${g}</span>&nbsp;年&nbsp;<span class="uf sm">${c}</span>&nbsp;班&nbsp;<span class="uf sm">${rec.seat}</span>&nbsp;號&nbsp;&nbsp;學生：<span class="uf xl">${rec.name}</span></div>
-  <div class="row">於&nbsp;<span class="uf md">${dp[0]}</span>&nbsp;年&nbsp;<span class="uf sm">${dp[1]}</span>&nbsp;月&nbsp;<span class="uf sm">${dp[2]}</span>&nbsp;日&nbsp;&nbsp;時間：<span class="uf lg">${rec.time}</span></div>
-  <div class="row">因&nbsp;&nbsp;<span class="reasons">${['禮貌不周者','上課不專心聽講','違反生活常規者','違反學習規範者'].map(r=>`<span class="rsn${rec.reason===r?' sel':''}">${r}</span>`).join('')}</span></div>
-  <div class="note-row">備註：<span class="note-line">${rec.note||''}</span></div>
+  <div class="row">查&nbsp;<span class="uf sm">${g}</span>&nbsp;年&nbsp;<span class="uf sm">${c}</span>&nbsp;班&nbsp;<span class="uf sm">${escapeHtml(rec.seat)}</span>&nbsp;號&nbsp;&nbsp;學生：<span class="uf xl">${escapeHtml(rec.name)}</span></div>
+  <div class="row">於&nbsp;<span class="uf md">${dp[0]||''}</span>&nbsp;年&nbsp;<span class="uf sm">${dp[1]||''}</span>&nbsp;月&nbsp;<span class="uf sm">${dp[2]||''}</span>&nbsp;日&nbsp;&nbsp;時間：<span class="uf lg">${escapeHtml(rec.time)}</span></div>
+  <div class="row">因&nbsp;&nbsp;<span class="reasons">${reasonHtml}</span></div>
+  <div class="note-row">備註：<span class="note-text">${escapeHtml(rec.note)}</span></div>
   <div class="fixed">故開立此單，以示警惕。</div>
   <div class="fixed">若單一學期收領此單五張（同一項目），則依校規記警告一支。</div>
-  ${copy.hasParent?`<div class="par">家長簽章：<span class="par-line"></span></div>`:''}
   <div class="sigs">
-    <div class="sig">開單老師<div class="sig-val">${rec.teacher}</div></div>
+    <div class="sig">開單老師<div class="sig-val">${escapeHtml(rec.teacher)}</div></div>
     <div class="sig">導師簽章<div class="sig-blank"></div></div>
-    <div class="sig">學務處<div class="sig-blank"></div></div>
+    <div class="sig">學務處<div class="sig-blank"></div>${copy.hasParent?'<div class="parent-under">家長簽章：</div>':''}</div>
   </div>
 </div>`;
     });
