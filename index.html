@@ -387,43 +387,56 @@ function uploadViaJSONP(data) {
 // ===================== 送出 =====================
 async function submitGrade(grade) {
   const {valid, data, firstError} = validateGrade(grade);
-  if (!valid) { alert(`⚠️ ${firstError}\n\n請完整填寫所有必填欄位後再送出。`); return; }
+  if (!valid) { alert(`⚠️ ${firstError}
+
+請完整填寫所有必填欄位後再送出。`); return; }
+
+  if (!SCRIPT_URL || SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+    alert('⚠️ 尚未設定 Apps Script 網路應用程式網址。
+
+為避免未登錄就列印，請先設定 SCRIPT_URL 後再送出。');
+    return;
+  }
+
+  // 先在使用者點擊時開啟預備列印視窗，避免上傳完成後才開窗被瀏覽器阻擋。
+  // 此時只顯示等待文字；必須等後端回傳 success 才會產生勸導單並列印。
+  const printWin = window.open('', '_blank', 'width=900,height=700');
+  if (!printWin) {
+    alert('⚠️ 瀏覽器已阻擋彈出視窗。
+
+請先允許此網站的彈出式視窗，再重新送出。
+資料尚未送出，請不用擔心重複登錄。');
+    return;
+  }
+  printWin.document.write(`<!DOCTYPE html><html lang="zh-TW"><head><meta charset="UTF-8"><title>勸導單產生中</title>
+    <style>body{font-family:Arial,'Noto Sans TC',sans-serif;padding:40px;line-height:1.8;color:#222;}</style></head>
+    <body><h2>資料登錄中，請稍候⋯</h2><p>後端確認收到資料後，系統才會產生列印畫面。</p></body></html>`);
+  printWin.document.close();
 
   showOverlay(true, '資料上傳中，請稍候⋯');
 
   try {
     const result = await uploadViaJSONP(data);
 
-    if (result.skipped) {
-      // 尚未設定 SCRIPT_URL，跳過上傳
-      showOverlay(true, '正在產生勸導單⋯');
+    if (result && result.success) {
+      showOverlay(true, '後端已收到資料，正在產生勸導單⋯');
       await new Promise(r=>setTimeout(r,200));
       showOverlay(false);
-      printSlips(data);
-      showToast('success', '✓ 勸導單已產生，請記得列印並送至導辦及學務處蓋章');
-    } else if (result.success) {
-      // 上傳成功
-      showOverlay(true, '正在產生勸導單⋯');
-      await new Promise(r=>setTimeout(r,200));
-      showOverlay(false);
-      printSlips(data);
-      showToast('success', '✓ 已成功登錄勸導，請記得列印勸導單以利核章流程');
+      printSlips(data, printWin);
+      showToast('success', '✓ 已成功登錄勸導，正在開啟列印畫面');
+      resetGrade(grade);
     } else {
-      // Apps Script 回傳失敗
       showOverlay(false);
-      showToast('error', '✗ 資料登錄失敗，請截圖並通知管理員。勸導單仍將開啟，請手動補登。');
-      printSlips(data);
+      try { printWin.close(); } catch(err) {}
+      showToast('error', '✗ 資料登錄失敗，未產生列印畫面。請截圖並通知管理員。');
       return;
     }
   } catch(e) {
-    // 網路錯誤或 timeout
     showOverlay(false);
-    showToast('error', '✗ 網路異常，資料可能未登錄。請通知管理員確認。勸導單仍將開啟列印。');
-    printSlips(data);
+    try { printWin.close(); } catch(err) {}
+    showToast('error', '✗ 網路異常或後端逾時，未產生列印畫面。請確認資料是否已登錄後再重試。');
     return;
   }
-
-  resetGrade(grade);
 }
 
 function resetGrade(grade) { document.getElementById(`cards${grade}`).innerHTML=''; addCard(grade); }
@@ -439,8 +452,8 @@ function escapeHtml(value) {
 }
 
 // ===================== 列印勸導單 =====================
-function printSlips(records) {
-  const win = window.open('','_blank','width=900,height=700');
+function printSlips(records, existingWin) {
+  const win = existingWin || window.open('', '_blank', 'width=900,height=700');
   if (!win) { alert('請允許彈出視窗以顯示勸導單\n（請在瀏覽器網址列右側允許彈出視窗）'); return; }
 
   const copies = [
