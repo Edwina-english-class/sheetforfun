@@ -25,7 +25,7 @@
   .login-btn:hover { background: var(--red-light); }
   .login-error { color: var(--red); font-size: 13px; margin-top: 12px; display: none; }
 
-  #app { display: none; }
+  #app { display: block; }
   header { background: var(--ink); color: white; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid var(--red); }
   .header-left { display: flex; align-items: center; gap: 16px; }
   .header-seal { width: 48px; height: 48px; border: 2px solid var(--red); display: flex; align-items: center; justify-content: center; font-family: 'Noto Serif TC', serif; font-size: 11px; color: var(--red); letter-spacing: 1px; line-height: 1.4; text-align: center; }
@@ -110,17 +110,6 @@
 </style>
 </head>
 <body>
-
-<div id="loginScreen">
-  <div class="login-box">
-    <div class="login-seal">新竹市立竹光國民中學</div>
-    <div class="login-title">勸導單系統</div>
-    <div class="login-sub">請輸入密碼以繼續</div>
-    <input type="password" id="pwInput" maxlength="4" placeholder="••••" autocomplete="off">
-    <button class="login-btn" onclick="checkLogin()">登　入</button>
-    <div class="login-error" id="loginError">密碼錯誤，請重新輸入</div>
-  </div>
-</div>
 
 <div class="toast" id="toast"></div>
 
@@ -232,25 +221,15 @@ const REASONS = ['禮貌不周者','上課不專心聽講','違反生活常規�
 // ★ 請將下方替換為您的 Apps Script 部署網址 ★
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNgTFcf2y7Vd2bnptUA99-GEwvxY8arl22WYzEmDuWc1HSOjVh2g-R4XwYCQ0E3MCT/exec';
 
-// ===================== 登入 =====================
-function checkLogin() {
-  if (document.getElementById('pwInput').value === '0000') {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    initApp();
-  } else {
-    document.getElementById('loginError').style.display = 'block';
-    document.getElementById('pwInput').value = '';
-    document.getElementById('pwInput').focus();
-  }
-}
-document.getElementById('pwInput').addEventListener('keydown', e => { if (e.key==='Enter') checkLogin(); });
-
+// ===================== 初始化 =====================
 function initApp() {
   const now = new Date();
   document.getElementById('headerDate').textContent = `${now.getFullYear()} 年 ${now.getMonth()+1} 月 ${now.getDate()} 日`;
   [7,8,9].forEach(g => addCard(g));
 }
+
+// 頁面載入後直接進入系統，不顯示登入畫面
+document.addEventListener('DOMContentLoaded', initApp);
 
 function switchGrade(g) {
   document.querySelectorAll('.grade-tab').forEach(t=>t.classList.remove('active'));
