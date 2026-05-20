@@ -423,7 +423,7 @@ async function submitGrade(grade) {
       await new Promise(r=>setTimeout(r,200));
       showOverlay(false);
       printSlips(data, printWin);
-      showToast('success', '✓ 已成功登錄勸導，正在開啟列印畫面');
+      showToast('success', '✓ 已成功登錄勸導，請到列印視窗點選「列印勸導單」');
       resetGrade(grade);
     } else {
       showOverlay(false);
@@ -468,6 +468,12 @@ function printSlips(records, existingWin) {
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Noto Serif TC','Noto Sans TC',serif;font-size:10pt;color:#000;background:#fff;}
+.print-toolbar{position:fixed;top:0;left:0;right:0;background:#1a1a2e;color:#fff;padding:10px 14px;text-align:center;font-family:'Noto Sans TC',sans-serif;font-size:13px;z-index:9999;box-shadow:0 2px 10px rgba(0,0,0,.25);}
+.print-toolbar button{margin-left:12px;padding:8px 18px;border:0;background:#c0392b;color:#fff;font-size:14px;cursor:pointer;border-radius:2px;}
+.print-toolbar button:hover{background:#e74c3c;}
+.print-toolbar .hint{color:#ddd;margin-left:10px;}
+.print-area{padding-top:54px;}
+@media print{.print-toolbar{display:none!important;}.print-area{padding-top:0!important;}}
 @page{size:A4;margin:6mm 8mm;}
 .rec{height:285mm;page-break-after:always;break-after:page;overflow:hidden;}
 .rec:last-child{page-break-after:auto;break-after:auto;}
@@ -493,7 +499,7 @@ body{font-family:'Noto Serif TC','Noto Sans TC',serif;font-size:10pt;color:#000;
 .lbl{position:absolute;right:1.2mm;top:6mm;font-size:7.5pt;color:#666;writing-mode:vertical-rl;text-orientation:mixed;letter-spacing:0.5px;}
 .cut-line{height:0;border-top:1px dashed #777;margin:0 0 2mm;}
 @media print{html,body{width:210mm;height:297mm;} .rec{page-break-inside:avoid;} }
-</style></head><body>`;
+</style></head><body><div class="print-toolbar">後端已登錄成功。確認紙張為 A4 後，請按右側按鈕列印。<button onclick="window.focus(); window.print();">列印勸導單</button><span class="hint">列印時請選 A4／實際大小或預設比例</span></div><div class="print-area">`;
 
   records.forEach(rec => {
     const g = escapeHtml(rec.cls).charAt(0);
@@ -522,7 +528,7 @@ body{font-family:'Noto Serif TC','Noto Sans TC',serif;font-size:10pt;color:#000;
     html += `</div>`;
   });
 
-  html += `<script>window.onload=function(){setTimeout(function(){window.print();},600);};<\/script></body></html>`;
+  html += `</div><script>window.onload=function(){window.focus();};<\/script></body></html>`;
   win.document.write(html);
   win.document.close();
 }
