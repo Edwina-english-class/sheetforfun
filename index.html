@@ -219,7 +219,7 @@ const TIME_OPTIONS = ['早修','第一節','第二節','第三節','第四節','
 const REASONS = ['禮貌不周者','上課不專心聽講','違反生活常規者','違反學習規範者'];
 
 // ★ 請將下方替換為您的 Apps Script 部署網址 ★
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNgTFcf2y7Vd2bnptUA99-GEwvxY8arl22WYzEmDuWc1HSOjVh2g-R4XwYCQ0E3MCT/exec';
+const SCRIPT_URL = 'Yhttps://script.google.com/macros/s/AKfycbxNgTFcf2y7Vd2bnptUA99-GEwvxY8arl22WYzEmDuWc1HSOjVh2g-R4XwYCQ0E3MCT/execE';
 
 // ===================== 初始化 =====================
 function initApp() {
@@ -371,9 +371,9 @@ async function submitGrade(grade) {
 請完整填寫所有必填欄位後再送出。`); return; }
 
   if (!SCRIPT_URL || SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
-    alert('⚠️ 尚未設定 Apps Script 網路應用程式網址。
+    alert(`⚠️ 尚未設定 Apps Script 網路應用程式網址。
 
-為避免未登錄就列印，請先設定 SCRIPT_URL 後再送出。');
+為避免未登錄就列印，請先設定 SCRIPT_URL 後再送出。`);
     return;
   }
 
@@ -381,10 +381,10 @@ async function submitGrade(grade) {
   // 此時只顯示等待文字；必須等後端回傳 success 才會產生勸導單並列印。
   const printWin = window.open('', '_blank', 'width=900,height=700');
   if (!printWin) {
-    alert('⚠️ 瀏覽器已阻擋彈出視窗。
+    alert(`⚠️ 瀏覽器已阻擋彈出視窗。
 
 請先允許此網站的彈出式視窗，再重新送出。
-資料尚未送出，請不用擔心重複登錄。');
+資料尚未送出，請不用擔心重複登錄。`);
     return;
   }
   printWin.document.write(`<!DOCTYPE html><html lang="zh-TW"><head><meta charset="UTF-8"><title>勸導單產生中</title>
